@@ -1,0 +1,296 @@
+/* ==========================================================================
+   NOVACREST HOMES LIMITED - Dedicated Sub-Pages Styles
+   Design System v1.0 — Quiet Architectural Luxury
+   Header Banners, Breadcrumbs, Page Layouts
+   ========================================================================== */
+
+/* Sub-page Header Hero Banner */
+.page-hero-banner {
+  position: relative;
+  padding-top: 140px;
+  padding-bottom: var(--space-14);
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/nova-crest-palace.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--color-slate-200);
+  overflow: hidden;
+  color: var(--color-white);
+}
+
+.page-hero-banner.banner-about {
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/your-home-interior.jpg');
+}
+
+.page-hero-banner.banner-properties {
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/nova-crest-villa.jpg');
+}
+
+.page-hero-banner.banner-locations {
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/masterplan-aerial.jpg');
+}
+
+.page-hero-banner.banner-services {
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/nova-crest-garden.jpg');
+}
+
+.page-hero-banner.banner-insights {
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/nova-crest-experience.jpg');
+}
+
+.page-hero-banner.banner-contact {
+  background-image: 
+    linear-gradient(90deg, rgba(19, 17, 18, 0.95) 0%, rgba(19, 17, 18, 0.88) 36%, rgba(19, 17, 18, 0.52) 65%, rgba(19, 17, 18, 0.15) 100%),
+    linear-gradient(180deg, rgba(19, 17, 18, 0.40) 0%, transparent 40%, rgba(19, 17, 18, 0.80) 100%),
+    url('../assets/images/nova-crest-palace.jpg');
+}
+
+.page-hero-banner .section-eyebrow {
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--color-slate-300);
+  margin-bottom: var(--space-4);
+}
+
+.breadcrumbs a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.breadcrumbs a:hover {
+  color: var(--color-white);
+  text-decoration: underline;
+}
+
+.breadcrumbs span.current {
+  color: var(--color-white);
+  font-weight: 500;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.025em;
+  color: #ffffff;
+}
+
+.page-hero-banner .page-title,
+.page-hero-banner .page-title span {
+  color: #ffffff !important;
+  font-family: var(--font-display) !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 32px;
+  }
+}
+
+.page-subtitle {
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 720px;
+  line-height: 1.65;
+}
+
+/* Dedicated Property Detail Page Layout */
+.property-detail-page {
+  padding-top: 110px;
+  padding-bottom: var(--space-16);
+}
+
+.property-detail-page .page-title {
+  color: var(--color-ink-900);
+}
+
+.property-detail-page .breadcrumbs {
+  color: var(--color-slate-500);
+}
+
+.property-detail-page .breadcrumbs a {
+  color: var(--color-bronze);
+}
+
+.property-detail-page .breadcrumbs span.current {
+  color: var(--color-ink-900);
+}
+
+.property-gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  border-radius: var(--radius-card, 5px);
+  overflow: hidden;
+  max-height: 520px;
+}
+
+@media (max-width: 900px) {
+  .property-gallery-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+}
+
+.gallery-main-img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+}
+
+.gallery-sub-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.gallery-sub-img {
+  width: 100%;
+  height: 252px;
+  object-fit: cover;
+}
+
+.property-main-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-8);
+}
+
+@media (max-width: 992px) {
+  .property-main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.property-sidebar-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-card, 5px);
+  padding: var(--space-7);
+  position: sticky;
+  top: 96px;
+  box-shadow: var(--shadow-2);
+}
+
+/* Proximity Table */
+.proximity-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-3);
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-card, 5px);
+  overflow: hidden;
+}
+
+.proximity-table th, .proximity-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-slate-100);
+  font-size: 13px;
+}
+
+.proximity-table th {
+  background: var(--color-ivory-100);
+  color: var(--color-bronze-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.proximity-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   Services Page Alternating Rows — Aligned Image Heights
+   ========================================================================== */
+.service-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: stretch;
+  margin-bottom: 5.5rem;
+}
+
+.service-row:last-child {
+  margin-bottom: 0;
+}
+
+.service-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.service-content > :first-child {
+  margin-top: 0;
+}
+
+.service-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+}
+
+.service-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-card, 5px);
+  border: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-1);
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .service-row {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .service-row .service-content {
+    order: 1 !important;
+  }
+
+  .service-row .service-image-wrapper {
+    order: 2 !important;
+    min-height: 320px;
+    height: 340px;
+  }
+}
+

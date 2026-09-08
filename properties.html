@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties Portfolio — NOVA CREST HOMES LIMITED | Abuja Luxury & Diaspora Real Estate</title>
+  <meta name="description" content="Explore luxury homes, villas, duplexes, off-plan developments, and investment land plots in Maitama, Jabi, Guzape, Asokoro, and Karshi Abuja. Verified titles.">
+  
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- SITE HEADER -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-container">
+      <a href="index.html" class="brand-logo" id="navBrandLogo" aria-label="Novacrest Homes Ltd">
+        <img src="assets/images/novacrest-logo-white.png" alt="Novacrest Homes Ltd" class="brand-logo-img logo-white">
+        <img src="assets/images/novacrest-logo-dark.png" alt="Novacrest Homes Ltd" class="brand-logo-img logo-dark">
+      </a>
+
+      <!-- 6-7 Navigation Menu Items -->
+      <nav class="nav-menu" id="primaryNavMenu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="properties.html" class="nav-link active">Properties</a>
+        <a href="locations.html" class="nav-link">Locations</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Live Currency Switcher -->
+        <div class="currency-toggle" id="headerCurrencyToggle">
+          <button class="currency-btn active" data-curr="NGN">₦ NGN</button>
+          <button class="currency-btn" data-curr="USD">$ USD</button>
+        </div>
+
+        <a href="https://wa.me/2348166800142?text=Hello%20Novacrest%20Homes%20Ltd,%20I%20would%20like%20to%20speak%20with%20an%20advisor." target="_blank" rel="noopener" class="btn btn-consultation-nav">
+          <span>Talk to us</span>
+        </a>
+
+        <div class="mobile-nav-toggle" id="mobileNavToggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE HERO BANNER -->
+  <section class="page-hero-banner banner-properties">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <span class="current">Properties</span>
+      </div>
+      <div class="section-eyebrow">CURATED ABUJA DEVELOPMENTS</div>
+      <h1 class="page-title">Verified Residences & <br><span>Investment Properties</span></h1>
+      <p class="page-subtitle">
+        Explore our flagship developments: <strong>Nova Crest Palace</strong>, <strong>Nova Crest Villa</strong>, <strong>Nova Crest Garden</strong>, <strong>Nova Crest Experience</strong>, <strong>Your Home</strong>, and prime serviced plots.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROPERTIES FILTER & CATALOG -->
+  <section class="section-padding">
+    <div class="container">
+      
+      <!-- Filter Bar -->
+      <div class="hero-search-box" style="margin-bottom: 2.5rem; max-width: 100%;">
+        <div class="search-fields-grid">
+          <div class="search-field-group">
+            <label class="search-label" for="heroDistrictSelect">Abuja District</label>
+            <select class="search-select" id="heroDistrictSelect">
+              <option value="all">All Abuja Districts</option>
+              <option value="maitama">Maitama (Diplomatic)</option>
+              <option value="asokoro">Asokoro (Prestige)</option>
+              <option value="guzape">Guzape (Hillside)</option>
+              <option value="jabi">Jabi (Waterfront)</option>
+              <option value="karshi">Karshi (High-Yield Plots)</option>
+              <option value="kuje">Kuje (Green Belt)</option>
+              <option value="lokogoma">Lokogoma (Family Duplexes)</option>
+              <option value="airport road">Airport Road Corridor</option>
+            </select>
+          </div>
+
+          <div class="search-field-group">
+            <label class="search-label" for="heroPurposeSelect">Classification</label>
+            <select class="search-select" id="heroPurposeSelect">
+              <option value="all">All Classifications</option>
+              <option value="off-plan">Off-Plan Developments</option>
+              <option value="sale">Finished Homes For Sale</option>
+              <option value="land">Land / Plots</option>
+              <option value="rent">Diplomatic Lease</option>
+            </select>
+          </div>
+
+          <div class="search-field-group">
+            <label class="search-label" for="heroSearchInput">Search Keywords</label>
+            <input type="text" class="search-input" id="heroSearchInput" placeholder="e.g. Palace, Villa, Garden, C of O...">
+          </div>
+
+          <div>
+            <button class="btn btn-primary" id="heroSearchBtn" style="height: 48px; width: 100%;">
+              <span>Filter Properties</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Filter Tabs & Currency Switcher -->
+      <div class="filter-toolbar">
+        <div class="filter-tabs" id="propertiesFilterTabs">
+          <button class="filter-tab-btn active" data-category="all">All Listings (9)</button>
+          <button class="filter-tab-btn" data-category="coming-soon">Coming Soon</button>
+          <button class="filter-tab-btn" data-category="off-plan">Off-Plan</button>
+          <button class="filter-tab-btn" data-category="sale">For Sale</button>
+          <button class="filter-tab-btn" data-category="land">Land / Plots</button>
+          <button class="filter-tab-btn" data-category="rent">For Rent</button>
+        </div>
+
+        <div class="currency-toggle" style="margin-left: auto;">
+          <button class="currency-btn active" data-curr="NGN">₦ NGN</button>
+          <button class="currency-btn" data-curr="USD">$ USD</button>
+        </div>
+      </div>
+
+      <!-- Properties Grid Container -->
+      <div class="properties-grid" id="propertiesGridContainer">
+        <!-- Rendered by js/filter.js with direct links to property.html?id=... -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div>
+          <div class="brand-logo" style="margin-bottom: 1.25rem;">
+            <img src="assets/images/novacrest-logo-white.png" alt="Novacrest Homes Ltd" class="brand-logo-img logo-white">
+            <img src="assets/images/novacrest-logo-dark.png" alt="Novacrest Homes Ltd" class="brand-logo-img logo-dark">
+          </div>
+          <p style="font-size:0.88rem; line-height:1.6; color:var(--text-muted); margin-bottom:1.5rem;">
+            Novacrest Homes Ltd stands as a real estate development company built on trust, clarity, and disciplined execution, focused on creating secure, high-value, and well-structured property investment opportunities in Abuja, Nigeria.
+          </p>
+          <div style="font-size:0.8rem; color:var(--gold-primary);">
+            RC Registered • AGIS Compliant • FCDA Approved
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="index.html">Home</a></li>
+            <li class="footer-link-item"><a href="about.html">About Us</a></li>
+            <li class="footer-link-item"><a href="properties.html">Properties</a></li>
+            <li class="footer-link-item"><a href="locations.html">Abuja Locations</a></li>
+            <li class="footer-link-item"><a href="services.html">Services</a></li>
+            <li class="footer-link-item"><a href="insights.html">Market Insights</a></li>
+            <li class="footer-link-item"><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Signature Pipeline</h4>
+          <ul class="footer-links-list">
+            <li class="footer-link-item"><a href="property.html?id=nova-crest-palace">Nova Crest Palace (Maitama)</a></li>
+            <li class="footer-link-item"><a href="property.html?id=nova-crest-villa">Nova Crest Villa (Jabi Lake)</a></li>
+            <li class="footer-link-item"><a href="property.html?id=nova-crest-garden">Nova Crest Garden (Guzape)</a></li>
+            <li class="footer-link-item"><a href="property.html?id=nova-crest-experience">Nova Crest Experience (Asokoro)</a></li>
+            <li class="footer-link-item"><a href="property.html?id=your-home">Your Home (Airport Road)</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Direct Inquiries</h4>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+            Phone / WhatsApp: <strong>+234 816 680 0142</strong><br>
+            Email: <a href="mailto:novacresthomesltd@gmail.com" style="color:var(--gold-light);">novacresthomesltd@gmail.com</a><br>
+            Central Business District / Maitama, Abuja
+          </p>
+          <a href="https://wa.me/2348166800142" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm" style="width:100%;">
+            <span>Chat on WhatsApp</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>© 2026 NOVA CREST HOMES LIMITED. All Rights Reserved. Abuja, Nigeria.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="about.html" style="color:var(--text-muted);">Legal Transparency</a>
+          <a href="services.html" style="color:var(--text-muted);">AGIS Title Assurance</a>
+          <a href="contact.html" style="color:var(--text-muted);">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE STICKY BAR -->
+  <aside class="sticky-mobile-bar" aria-label="Quick contact bar">
+    <div class="sticky-bar-content">
+      <a href="https://wa.me/2348166800142?text=Hello%20Novacrest%20Homes%20Ltd,%20I%20am%20inquiring%20about%20your%20Abuja%20properties." target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding: 0.65rem 1rem; font-size: 0.85rem;">
+        <span>WhatsApp (+234 816 680 0142)</span>
+      </a>
+      <a href="tel:+2348166800142" class="btn btn-primary" style="padding: 0.65rem 1rem; font-size: 0.85rem;">
+        <span>Call Now</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- FLOATING QUICK WHATSAPP -->
+  <a href="https://wa.me/2348166800142?text=Hello%20Novacrest%20Homes%20Ltd,%20I%20am%20interested%20in%20Abuja%20properties." target="_blank" rel="noopener" class="floating-whatsapp-btn" title="Chat with Novacrest on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+  </a>
+
+  <script type="module">
+    import './js/navigation.js';
+    import { initFilterEngine } from './js/filter.js';
+
+    // When clicking "View Details", navigate to dedicated property page
+    initFilterEngine((property) => {
+      window.location.href = `property.html?id=${property.id}`;
+    });
+  </script>
+</body>
+</html>

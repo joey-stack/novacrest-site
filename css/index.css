@@ -1,0 +1,680 @@
+/* ==========================================================================
+   NOVACREST HOMES LTD - Design System v1.0
+   Residential Communities · Luxury Apartments · Property Investment
+   Abuja, Nigeria
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap');
+
+:root {
+  /* ==========================================================================
+     04. COLOR SYSTEM — V2.0 (BRAND ALIGNED)
+     ========================================================================== */
+  /* Primary Palette (Logo Aligned — Crisp Black Shades for Typography) */
+  --color-ink-950: #131112;       /* Crisp Deep Black (Primary text, dark confident CTA) */
+  --color-ink-900: #1a1718;       /* Crisp Charcoal Black for Headings */
+  --color-ink-700: #363334;       /* Neutral Dark Charcoal for Secondary body text */
+  --color-slate-500: #70686b;     /* Slate 500 (Supporting text, labels, subtext) */
+  --color-slate-300: #b5a8ac;     /* Muted metadata */
+  --color-slate-200: #e3dbd8;     /* Slate 200 (Borders, outlines) */
+  --color-slate-100: #efeae7;     /* Dividers, subtle rules */
+  --color-ivory-50: #faf7f5;      /* Ivory 50 Champagne Cream (Main background surface) */
+  --color-ivory-100: #f3efea;     /* Ivory 100 (Secondary surface, inputs, stat cards) */
+  --color-white: #ffffff;         /* Cards & elevated surfaces */
+
+  /* Novacrest Signature Accent: Crimson Crest (#842D45) */
+  --color-crimson: #842d45;       /* Signature Crimson Crest brand accent */
+  --color-crimson-light: #f5e4e8; /* Accent Light / Rose tint */
+  --color-crimson-dark: #5e1c2e;  /* Accent Dark */
+
+  /* Former Architectural Gold (Maintained for Ownership Availability) */
+  --color-gold: #a88455;          /* Former Gold Accent */
+  --color-gold-light: #e9dfd0;    /* Gold Light */
+  --color-gold-dark: #765b38;     /* Gold Dark */
+
+  /* Aliased to Crimson Crest for general brand accents */
+  --color-bronze: #842d45;
+  --color-bronze-light: #f5e4e8;
+  --color-bronze-dark: #5e1c2e;
+
+  /* ==========================================================================
+     05. SEMANTIC COLORS (Status Badges)
+     ========================================================================== */
+  --status-available-bg: #eaf4ee;
+  --status-available-fg: #276342;
+  --status-selling-bg: #f9eaef;
+  --status-selling-fg: #842d45;
+  --status-reserved-bg: #eef0f4;
+  --status-reserved-fg: #4e5968;
+  --status-sold-bg: #f3eceb;
+  --status-sold-fg: #7f4b53;
+  --status-construction-bg: #f7efea;
+  --status-construction-fg: #6b2a3b;
+  --status-completed-bg: #eaf4ee;
+  --status-completed-fg: #276342;
+
+  /* ==========================================================================
+     14. BORDER RADIUS (Strictly 5px Cards Across Site, 4px Inner Media)
+     ========================================================================== */
+  --radius-xs: 3px;              /* Micro controls */
+  --radius-sm: 5px;              /* Inputs, tags, small cards */
+  --radius-md: 4px;              /* Property photography, nested cards */
+  --radius-lg: 5px;              /* Major cards, panels (strictly 5px) */
+  --radius-card: 5px;            /* Universal card radius: 5px */
+  --radius-card-media: 4px;      /* Card media / photography */
+  --radius-xl: 5px;              /* Hero surfaces, banners, dialogs */
+  --radius-pill: 9999px;         /* Status pills & chips */
+
+  /* ==========================================================================
+     10. SPACING SYSTEM (Base unit: 4px)
+     ========================================================================== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ==========================================================================
+     15. ELEVATION SYSTEM (Subtle Architectural Depth)
+     ========================================================================== */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(21, 21, 21, 0.06);     /* Most cards */
+  --shadow-2: 0 4px 12px rgba(21, 21, 21, 0.08);    /* Floating search panels */
+  --shadow-3: 0 12px 32px rgba(21, 21, 21, 0.10);   /* Overlays / flyouts */
+  --shadow-4: 0 20px 48px rgba(21, 21, 21, 0.12);   /* Modal / dialog */
+
+  /* ==========================================================================
+     13. CONTAINER WIDTHS & GRID
+     ========================================================================== */
+  --container-sm: 720px;
+  --container-md: 960px;
+  --container-lg: 1200px;        /* Default website container */
+  --container-xl: 1280px;        /* Premium editorial layouts */
+  --container-max: 1200px;
+  --grid-gutter: 24px;
+
+  /* ==========================================================================
+     07 & 08. TYPOGRAPHY & TYPE SCALE (design_system.md)
+     ========================================================================== */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-display: var(--font-sans);
+  --font-editorial: var(--font-serif);
+  --font-body: var(--font-sans);
+
+  /* Type Scale Tokens */
+  --text-display-xl: 72px;       /* Major hero */
+  --text-display-l: 64px;        /* Hero headline */
+  --text-h1: 52px;               /* Main page heading */
+  --text-h2: 40px;               /* Section heading */
+  --text-h3: 32px;               /* Major card / subsection */
+  --text-h4: 24px;               /* Listing title */
+  --text-h5: 20px;               /* Supporting heading */
+  --text-h6: 18px;               /* Small heading */
+  --text-body-l: 18px;           /* Intro copy */
+  --text-body-m: 16px;           /* Standard body copy */
+  --text-body-s: 14px;           /* Supporting copy */
+  --text-label-l: 14px;          /* UI labels / buttons */
+  --text-label-s: 12px;          /* Metadata / badges */
+  --text-caption: 11px;          /* Micro information */
+
+  /* ==========================================================================
+     35. MOTION SYSTEM (Architectural, Avoid Bouncy)
+     ========================================================================== */
+  --motion-fast: 150ms;          /* hover, icon transitions, small controls */
+  --motion-std: 250ms;           /* cards, menus, panels */
+  --motion-slow: 450ms;          /* page transitions, image reveals */
+  --ease-architectural: cubic-bezier(.2, .8, .2, 1);
+
+  /* ==========================================================================
+     SEMANTIC ALIASES (Backwards compatibility & UI Mapping)
+     ========================================================================== */
+  --bg-primary: var(--color-ivory-50);
+  --bg-surface: var(--color-white);
+  --bg-surface-elevated: var(--color-ivory-100);
+  --border-subtle: var(--color-slate-200);
+  --border-card: var(--color-slate-200);
+  --border-divider: var(--color-slate-100);
+  --text-primary: var(--color-ink-950);
+  --text-heading: var(--color-ink-900);
+  --text-secondary: var(--color-ink-700);
+  --text-supporting: var(--color-slate-500);
+  --text-muted: var(--color-slate-300);
+  --text-gold: var(--color-bronze);
+  --gold-primary: var(--color-bronze);
+  --gold-light: var(--color-bronze-light);
+  --gold-dark: var(--color-bronze-dark);
+  --emerald-accent: #276342;
+  --shadow-sm: var(--shadow-1);
+  --shadow-md: var(--shadow-2);
+  --shadow-lg: var(--shadow-3);
+  --shadow-card: var(--shadow-1);
+  --shadow-card-hover: 0 4px 16px rgba(21, 21, 21, 0.08);
+  --radius-full: var(--radius-pill);
+  --transition-fast: var(--motion-fast) var(--ease-architectural);
+  --transition-normal: var(--motion-std) var(--ease-architectural);
+}
+
+/* Dark Theme Variables (Deep Plum & Rosewood Crimson) */
+[data-theme="dark"] {
+  --color-ivory-50: #120a0d;       /* Deep plum dark canvas */
+  --color-ivory-100: #1a1014;      /* Secondary dark surface */
+  --color-white: #22151c;          /* Elevated dark cards */
+  --color-ink-950: #fbf7f8;        /* Light primary text */
+  --color-ink-900: #f5eaed;        /* Headings */
+  --color-ink-700: #d8c8cc;        /* Secondary text */
+  --color-slate-500: #a9969c;      /* Supporting text */
+  --color-slate-300: #756368;      /* Muted text */
+  --color-slate-200: #38242c;      /* Borders */
+  --color-slate-100: #2a1921;      /* Dividers */
+  --color-crimson: #d85777;        /* Vibrant rosewood crimson accent */
+  --color-crimson-light: #f5a3b7;
+  --color-crimson-dark: #842d45;
+  --color-bronze: #d85777;
+  --color-bronze-light: #f5a3b7;
+  --color-bronze-dark: #842d45;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-4: 0 20px 48px rgba(0, 0, 0, 0.7);
+}
+
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-ivory-50);
+  color: var(--color-ink-950);
+  line-height: 1.55;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-architectural), opacity var(--motion-fast) var(--ease-architectural);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ==========================================================================
+   08. Typography Scale & Classes
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-ink-900);
+  letter-spacing: -0.02em;
+}
+
+/* Editorial Serif Accent (DM Serif Display) */
+.font-editorial,
+.editorial-text,
+.serif-text {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Type Scale Classes (Page 7) */
+.display-xl {
+  font-size: 72px;
+  font-weight: 500;
+  line-height: 1.00;
+  letter-spacing: -0.035em;
+}
+
+.display-l {
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.heading-1, h1 {
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.heading-2, h2 {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.heading-3, h3 {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+
+.heading-4, h4 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.heading-5, h5 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.30;
+}
+
+.heading-6, h6 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.body-l {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.60;
+  color: var(--color-ink-700);
+}
+
+.body-m {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-ink-700);
+}
+
+.body-s {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.50;
+  color: var(--color-slate-500);
+}
+
+.label-l {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.30;
+}
+
+.label-s {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.30;
+  letter-spacing: 0.04em;
+}
+
+.caption-micro {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.30;
+  letter-spacing: 0.06em;
+}
+
+.text-bronze {
+  color: var(--color-bronze);
+}
+
+.text-supporting {
+  color: var(--color-slate-500);
+}
+
+.text-muted {
+  color: var(--color-slate-300);
+}
+
+/* ==========================================================================
+   13. Container & Layout
+   ========================================================================== */
+.container {
+  width: 100%;
+  max-width: var(--container-lg);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+
+.container-xl {
+  max-width: var(--container-xl);
+}
+
+.container-md {
+  max-width: var(--container-md);
+}
+
+.container-sm {
+  max-width: var(--container-sm);
+}
+
+.section-padding {
+  padding-top: var(--space-20);
+  padding-bottom: var(--space-20);
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
+  }
+}
+
+/* ==========================================================================
+   31. Section Header Pattern (Standardized: Eyebrow + H2 + Description)
+   ========================================================================== */
+.section-header {
+  text-align: left;
+  max-width: 780px;
+  margin: 0 0 var(--space-10);
+}
+
+.section-header.text-center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-eyebrow,
+.section-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-bronze);
+  margin-bottom: var(--space-3);
+}
+
+.section-title {
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin-bottom: var(--space-4);
+  color: var(--color-ink-900);
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 30px;
+  }
+}
+
+.section-description {
+  font-size: 16px;
+  color: var(--color-slate-500);
+  line-height: 1.6;
+  max-width: 680px;
+}
+
+/* ==========================================================================
+   17. Button System (8px Radius strictly, Height: 48px/44px/36px/52px)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-sm);  /* 8px */
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--motion-fast) var(--ease-architectural);
+  text-align: center;
+  position: relative;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* Primary Button (Page 14) */
+.btn-primary {
+  background: var(--color-ink-950);
+  color: var(--color-white);
+  border: 1px solid var(--color-ink-950);
+}
+
+.btn-primary:hover {
+  background: #000000;
+  border-color: #000000;
+  transform: translateY(-1px);
+  color: var(--color-white);
+}
+
+/* Secondary Button (Page 14) */
+.btn-secondary {
+  background: var(--color-ivory-100);
+  color: var(--color-ink-950);
+  border: 1px solid transparent;
+}
+
+.btn-secondary:hover {
+  background: #ebe8e1;
+  transform: translateY(-1px);
+}
+
+/* Outline Button (Page 14) */
+.btn-outline,
+.btn-outline-gold {
+  background: transparent;
+  border: 1px solid var(--color-slate-200);
+  color: var(--color-ink-950);
+}
+
+.btn-outline:hover,
+.btn-outline-gold:hover {
+  border-color: var(--color-ink-950);
+  background: rgba(21, 21, 21, 0.02);
+  transform: translateY(-1px);
+}
+
+/* Bronze Accent Button */
+.btn-bronze {
+  background: var(--color-bronze);
+  color: var(--color-white);
+  border: 1px solid var(--color-bronze);
+}
+
+.btn-bronze:hover {
+  background: var(--color-bronze-dark);
+  border-color: var(--color-bronze-dark);
+  transform: translateY(-1px);
+}
+
+/* Refined WhatsApp Action Button */
+.btn-whatsapp {
+  background: #25d366;
+  color: #ffffff;
+  border: 1px solid #25d366;
+}
+
+.btn-whatsapp:hover {
+  background: #20ba5a;
+  border-color: #20ba5a;
+  transform: translateY(-1px);
+}
+
+/* Button Sizing */
+.btn-sm {
+  height: 36px;
+  padding: 0 var(--space-4);
+  font-size: 13px;
+}
+
+.btn-lg {
+  height: 48px;
+  padding: 0 var(--space-6);
+  font-size: 15px;
+}
+
+.btn-hero {
+  height: 52px;
+  padding: 0 var(--space-7);
+  font-size: 16px;
+}
+
+.btn-arrow {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1;
+  transition: transform var(--motion-fast) var(--ease-architectural);
+}
+
+.btn:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+.btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   16. Icon System Tokens (Lucide / Outline - 14px, 16px, 18px, max 20px)
+   ========================================================================== */
+.icon-xs { width: 12px; height: 12px; }
+.icon-sm { width: 14px; height: 14px; }
+.icon-md { width: 16px; height: 16px; }
+.icon-lg { width: 18px; height: 18px; }
+.icon-xl { width: 20px; height: 20px; }
+
+/* ==========================================================================
+   19. Property Chips & 20. Status Badges
+   ========================================================================== */
+/* Property Chips (Apartment, Detached House, Penthouse, Land, Commercial) */
+.property-chip,
+.property-type-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-ink-950);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Semantic Status Badges (Page 16) */
+.status-badge,
+.property-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-badge::before,
+.property-status-badge::before {
+  content: '●';
+  font-size: 9px;
+  line-height: 1;
+}
+
+/* Status variants */
+.status-available,
+.badge-active {
+  background: var(--status-available-bg);
+  color: var(--status-available-fg);
+}
+
+.status-selling-fast {
+  background: var(--status-selling-bg);
+  color: var(--status-selling-fg);
+}
+
+.status-reserved {
+  background: var(--status-reserved-bg);
+  color: var(--status-reserved-fg);
+}
+
+.status-sold-out {
+  background: var(--status-sold-bg);
+  color: var(--status-sold-fg);
+}
+
+.status-construction,
+.badge-coming-soon {
+  background: var(--status-construction-bg);
+  color: var(--status-construction-fg);
+}
+
+.status-completed,
+.badge-ready {
+  background: var(--status-completed-bg);
+  color: var(--status-completed-fg);
+}
+
+/* Gold Gradient Heading Utility */
+.gradient-text-gold {
+  background: linear-gradient(135deg, #ffffff 0%, #f7dfa5 40%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+

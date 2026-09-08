@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+Thumbs.db
+preview_*.png
+crop_*.png
+framer_*.html
+.gemini/
+.vscode/
+novacrest-abuja/
