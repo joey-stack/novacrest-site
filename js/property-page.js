@@ -5,6 +5,7 @@
 
 import { PROPERTIES } from './properties-data.js';
 import { getDualPriceTag } from './currency.js';
+import { initCardStaggerObserver } from './navigation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
@@ -59,15 +60,35 @@ function renderPropertyPage(prop) {
   const priceSecondary = document.getElementById('propPriceSecondary');
   if (priceSecondary) priceSecondary.textContent = prices.secondary;
 
-  // Images Gallery
+  // Images Gallery with Interactive Crossfade Thumbnail Switching
   const mainImg = document.getElementById('propMainImg');
   if (mainImg) mainImg.src = prop.image;
 
+  function switchGalleryImage(thumb) {
+    if (!mainImg || !thumb) return;
+    const oldMainSrc = mainImg.src;
+    const newMainSrc = thumb.src;
+    if (oldMainSrc === newMainSrc) return;
+
+    mainImg.classList.add('fade-out');
+    setTimeout(() => {
+      mainImg.src = newMainSrc;
+      thumb.src = oldMainSrc;
+      mainImg.classList.remove('fade-out');
+    }, 150);
+  }
+
   const subImg1 = document.getElementById('propSubImg1');
-  if (subImg1 && prop.gallery && prop.gallery[1]) subImg1.src = prop.gallery[1];
+  if (subImg1 && prop.gallery && prop.gallery[1]) {
+    subImg1.src = prop.gallery[1];
+    subImg1.onclick = () => switchGalleryImage(subImg1);
+  }
 
   const subImg2 = document.getElementById('propSubImg2');
-  if (subImg2 && prop.gallery && prop.gallery[2]) subImg2.src = prop.gallery[2];
+  if (subImg2 && prop.gallery && prop.gallery[2]) {
+    subImg2.src = prop.gallery[2];
+    subImg2.onclick = () => switchGalleryImage(subImg2);
+  }
 
   // Specs
   const specsContainer = document.getElementById('propSpecsGrid');
@@ -172,9 +193,9 @@ function renderPropertyPage(prop) {
                 <span class="gauge-status-val">${avail.available}% AVAILABLE</span>
               </div>
               <div class="gauge-bar" style="height:5px;">
-                <div class="gauge-seg seg-available" style="width: ${avail.available}%"></div>
-                <div class="gauge-seg seg-reserved" style="width: ${avail.reserved}%"></div>
-                <div class="gauge-seg seg-sold" style="width: ${avail.sold}%"></div>
+                <div class="gauge-seg seg-available" data-target-width="${avail.available}%" style="width: 0%;"></div>
+                <div class="gauge-seg seg-reserved" data-target-width="${avail.reserved}%" style="width: 0%;"></div>
+                <div class="gauge-seg seg-sold" data-target-width="${avail.sold}%" style="width: 0%;"></div>
               </div>
             </div>
 
@@ -194,5 +215,7 @@ function renderPropertyPage(prop) {
         </article>
       `;
     }).join('');
+
+    initCardStaggerObserver();
   }
 }
