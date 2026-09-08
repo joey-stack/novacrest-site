@@ -495,6 +495,11 @@
     border-left: 3px solid var(--color-crimson, #842d45);
   }
 
+  .nav-link.active::after {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   .mobile-nav-toggle {
     display: flex;
   }

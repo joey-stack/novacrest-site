@@ -51,7 +51,6 @@ function initMobileMenu() {
   const navMenu = document.querySelector('.nav-menu');
 
   if (toggleBtn && navMenu) {
-
     toggleBtn.addEventListener('click', () => {
       const isOpen = navMenu.classList.toggle('open');
       toggleBtn.classList.toggle('active', isOpen);
