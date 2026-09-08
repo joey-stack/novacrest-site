@@ -1765,34 +1765,36 @@
 
 .insight-meta {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1.15rem;
 }
 
 .insight-badge {
-  font-size: 11.5px;
+  display: inline-block;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 4px 10px;
+  letter-spacing: 0.05em;
+  padding: 5px 12px;
   border-radius: var(--radius-pill);
   background: rgba(132, 45, 69, 0.08);
   color: var(--color-crimson, #842d45);
   border: 1px solid rgba(132, 45, 69, 0.2);
-  line-height: 1.2;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .insight-time {
   font-size: 12px;
   color: var(--color-gold, #a88455);
   font-weight: 500;
-  white-space: nowrap;
+  display: inline-block;
 }
 
 .insight-title {
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 600;
   line-height: 1.35;
   margin-bottom: 0.75rem;
@@ -1806,7 +1808,7 @@
 }
 
 .insight-snippet {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--color-slate-500, #70686b);
   line-height: 1.65;
   margin-bottom: 1.25rem;
@@ -1817,11 +1819,11 @@
   background: var(--color-ivory-100, #F3EFEA);
   border-left: 3px solid var(--color-crimson, #842d45);
   border-radius: 4px;
-  padding: 0.65rem 0.85rem;
-  font-size: 0.82rem;
+  padding: 0.75rem 0.95rem;
+  font-size: 0.84rem;
   line-height: 1.5;
   color: var(--color-ink-700, #363334);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .insight-highlight-label {
@@ -1832,16 +1834,16 @@
 
 .insight-footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
   margin-top: auto;
-  padding-top: 1rem;
+  padding-top: 1.15rem;
   border-top: 1px solid var(--color-slate-200, #E3DBD8);
 }
 
 .insight-readmore {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--color-crimson, #842d45);
   text-decoration: none;
@@ -1854,28 +1856,31 @@
 
 .insight-readmore:hover {
   gap: 10px;
-  color: var(--color-gold, #a88455);
+  color: var(--color-crimson-dark, #5e1c2e);
 }
 
 .insight-action-btn {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--color-slate-500);
-  background: transparent;
+  width: 100%;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink-700);
+  background: var(--color-ivory-50);
   border: 1px solid var(--color-slate-200);
-  border-radius: var(--radius-pill);
-  padding: 4px 10px;
+  border-radius: var(--radius-sm, 5px);
+  padding: 8px 14px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
   transition: all var(--motion-fast) var(--ease-architectural);
 }
 
 .insight-action-btn:hover {
-  background: var(--color-ivory-100);
-  color: var(--color-ink-950);
-  border-color: var(--color-slate-300);
+  background: var(--color-crimson);
+  color: #ffffff;
+  border-color: var(--color-crimson);
+  box-shadow: 0 2px 8px rgba(132, 45, 69, 0.2);
 }
 
 /* Dark theme overrides for insights */
