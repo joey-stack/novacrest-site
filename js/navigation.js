@@ -51,15 +51,34 @@ function initMobileMenu() {
   const navMenu = document.querySelector('.nav-menu');
 
   if (toggleBtn && navMenu) {
+    // Check if footer actions already added
+    if (!navMenu.querySelector('.nav-menu-footer')) {
+      const footerWrap = document.createElement('div');
+      footerWrap.className = 'nav-menu-footer';
+      footerWrap.innerHTML = `
+        <a href="https://wa.me/2348166800142?text=Hello%20Novacrest%20Homes%20Ltd,%20I%20would%20like%20to%20speak%20with%20an%20advisor." target="_blank" rel="noopener" class="nav-mobile-cta">
+          <span>Talk to an Advisor (WhatsApp)</span>
+          <span>→</span>
+        </a>
+        <div class="nav-mobile-info">
+          <span>Abuja, Nigeria</span>
+          <a href="tel:+2348166800142">+234 816 680 0142</a>
+        </div>
+      `;
+      navMenu.appendChild(footerWrap);
+    }
+
     toggleBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
-      toggleBtn.classList.toggle('active');
+      const isOpen = navMenu.classList.toggle('open');
+      toggleBtn.classList.toggle('active', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
     document.querySelectorAll('.nav-link').forEach(l => {
       l.addEventListener('click', () => {
         navMenu.classList.remove('open');
         toggleBtn.classList.remove('active');
+        document.body.style.overflow = '';
       });
     });
   }
