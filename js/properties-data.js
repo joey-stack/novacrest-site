@@ -3,7 +3,7 @@
  * Abuja, Nigeria - Diaspora & Luxury Real Estate
  */
 
-export const PROPERTIES = [
+const DEFAULT_PROPERTIES = [
   {
     id: "nova-crest-palace",
     name: "Nova Crest Palace",
@@ -566,3 +566,62 @@ export const TESTIMONIALS = [
     rating: 5
   }
 ];
+
+export function getProperties() {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem('novacrest_properties');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Error reading stored properties:', err);
+  }
+  return DEFAULT_PROPERTIES;
+}
+
+export function saveProperty(propData) {
+  const props = getProperties().slice();
+  const existingIdx = props.findIndex(p => p.id === propData.id);
+  if (existingIdx >= 0) {
+    props[existingIdx] = { ...props[existingIdx], ...propData };
+  } else {
+    props.unshift(propData);
+  }
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.setItem('novacrest_properties', JSON.stringify(props));
+  }
+  return props;
+}
+
+export function deleteProperty(id) {
+  const props = getProperties().filter(p => p.id !== id);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.setItem('novacrest_properties', JSON.stringify(props));
+  }
+  return props;
+}
+
+export function resetProperties() {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.removeItem('novacrest_properties');
+  }
+  return DEFAULT_PROPERTIES;
+}
+
+export const PROPERTIES = getProperties();
+
+if (typeof window !== 'undefined') {
+  window.NovacrestPropertyStore = {
+    getProperties,
+    saveProperty,
+    deleteProperty,
+    resetProperties,
+    DEFAULT_PROPERTIES
+  };
+}
+

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive CMS Dashboard — NOVA CREST HOMES LIMITED</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ADMIN SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/images/novacrest-logo-white.png" alt="Novacrest Homes Ltd" class="sidebar-logo-img">
+      <span class="sidebar-brand-badge">CMS Portal</span>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section-title">Core Management</div>
+      <button type="button" class="admin-nav-item active" data-tab="overview">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        <span>Executive Overview</span>
+      </button>
+
+      <button type="button" class="admin-nav-item" data-tab="articles">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        <span>Market Articles & Blog</span>
+      </button>
+
+      <button type="button" class="admin-nav-item" data-tab="properties">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.84L18 11v7h-2v-6H8v6H6v-7l6-5.16z"/></svg>
+        <span>Developments Catalog</span>
+      </button>
+
+      <div class="nav-section-title">Investor Pipeline</div>
+      <button type="button" class="admin-nav-item" data-tab="leads">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <span>Consultation Leads</span>
+      </button>
+
+      <button type="button" class="admin-nav-item" data-tab="backup">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+        <span>Sync & Data Export</span>
+      </button>
+    </div>
+
+    <!-- Sidebar Admin Footer -->
+    <div class="admin-sidebar-footer">
+      <div class="admin-user-info">
+        <div class="admin-user-avatar" id="adminUserAvatar">NA</div>
+        <div>
+          <div class="admin-user-name" id="adminUserName">Executive Admin</div>
+          <div class="admin-user-role" id="adminUserRole">Super Admin</div>
+        </div>
+      </div>
+      <button type="button" class="admin-logout-btn" id="adminLogoutBtn" title="Log Out">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="admin-main-wrapper">
+    
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <h1 class="topbar-page-title" id="topbarPageTitle">Executive Dashboard Overview</h1>
+      </div>
+
+      <div class="topbar-right">
+        <a href="../index.html" target="_blank" class="btn-admin btn-admin-secondary btn-admin-sm">
+          <span>Live Website</span>
+          <span>↗</span>
+        </a>
+        <a href="../blog.html" target="_blank" class="btn-admin btn-admin-secondary btn-admin-sm">
+          <span>Blog Archive</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- CONTENT WORKSPACE -->
+    <main class="admin-content-area">
+
+      <!-- ==================================================================
+           TAB 1: EXECUTIVE OVERVIEW
+           ================================================================== -->
+      <section class="admin-tab-panel active" id="tab-overview">
+        <!-- KPI Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Published Articles</span>
+              <div class="stat-icon">✍️</div>
+            </div>
+            <div class="stat-value" id="kpiTotalArticles">5</div>
+            <div class="stat-footer">Live on Novacrest Blog</div>
+          </div>
+
+          <div class="stat-card crimson">
+            <div class="stat-header">
+              <span class="stat-label">Active Developments</span>
+              <div class="stat-icon">🏢</div>
+            </div>
+            <div class="stat-value" id="kpiTotalProperties">5</div>
+            <div class="stat-footer">Maitama, Guzape, Jabi, Karshi</div>
+          </div>
+
+          <div class="stat-card success">
+            <div class="stat-header">
+              <span class="stat-label">Investor Inquiries</span>
+              <div class="stat-icon">📥</div>
+            </div>
+            <div class="stat-value" id="kpiTotalLeads">2</div>
+            <div class="stat-footer">Direct Consultation Requests</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Spotlight Articles</span>
+              <div class="stat-icon">★</div>
+            </div>
+            <div class="stat-value" id="kpiFeaturedArticles">1</div>
+            <div class="stat-footer">Hero Featured Intelligence</div>
+          </div>
+        </div>
+
+        <!-- Quick Summary Card -->
+        <div class="content-card">
+          <div class="content-card-header">
+            <h2 class="content-card-title">Recent Real Estate Intelligence Updates</h2>
+            <div class="card-actions-row">
+              <button type="button" class="btn-admin btn-admin-gold btn-admin-sm admin-nav-item" data-tab="articles">
+                <span>Manage All Articles →</span>
+              </button>
+            </div>
+          </div>
+          <div style="padding: 20px 24px;" id="recentActivityList">
+            <!-- Dynamic recent list -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 2: BLOG & ARTICLES MANAGER
+           ================================================================== -->
+      <section class="admin-tab-panel" id="tab-articles">
+        <div class="content-card">
+          <div class="content-card-header">
+            <h2 class="content-card-title">Market Intelligence & Legal Briefs</h2>
+            <div class="card-actions-row">
+              <input type="text" id="articleSearchInput" class="table-search-input" placeholder="Search by title or topic...">
+              <select id="articleCategorySelect" class="form-control" style="width: auto; padding: 7px 12px; font-size: 13px;">
+                <!-- Populated via JS -->
+              </select>
+              <button type="button" class="btn-admin btn-admin-primary" id="btnNewArticle">
+                <span>+ New Article</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Image</th>
+                  <th>Title & Slug</th>
+                  <th>Category</th>
+                  <th>Published</th>
+                  <th>Spotlight</th>
+                  <th style="width: 150px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="articlesTableBody">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 3: DEVELOPMENTS CATALOG
+           ================================================================== -->
+      <section class="admin-tab-panel" id="tab-properties">
+        <div class="content-card">
+          <div class="content-card-header">
+            <h2 class="content-card-title">Signature Developments & Land Assets</h2>
+            <div class="card-actions-row">
+              <button type="button" class="btn-admin btn-admin-primary" id="btnNewProperty">
+                <span>+ Add Development</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Photo</th>
+                  <th>Estate Name & District</th>
+                  <th>Pricing (NGN / USD)</th>
+                  <th>Status</th>
+                  <th>Specifications</th>
+                  <th style="width: 150px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="propertiesTableBody">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 4: INVESTOR LEADS
+           ================================================================== -->
+      <section class="admin-tab-panel" id="tab-leads">
+        <div class="content-card">
+          <div class="content-card-header">
+            <h2 class="content-card-title">Consultation & Inspection Inquiries</h2>
+            <div class="card-actions-row">
+              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnClearLeads">
+                <span>Clear Records</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Investor Name & Source</th>
+                  <th>Phone / WhatsApp</th>
+                  <th>Interest & Requirements</th>
+                  <th>Received Date</th>
+                  <th>Direct Contact</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody">
+                <!-- Injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 5: SYNC & DATA EXPORT
+           ================================================================== -->
+      <section class="admin-tab-panel" id="tab-backup">
+        <div class="content-card">
+          <div class="content-card-header">
+            <h2 class="content-card-title">Data Backup, Git Sync & Factory Reset</h2>
+          </div>
+          <div style="padding: 24px; max-width: 640px;">
+            <p style="color: var(--admin-text-muted); margin-bottom: 20px; line-height: 1.7;">
+              Because Novacrest runs as a high-performance, edge-deployed web application on Vercel, all edits made here in the Admin Portal are instantly available on your workstation browser session.
+            </p>
+            <p style="color: var(--admin-text-muted); margin-bottom: 25px; line-height: 1.7;">
+              To make your created articles and property adjustments permanently live for all visitors worldwide, click <strong>"Export blog-data.js"</strong> or <strong>"Export Backup JSON"</strong> to download the updated datasets for direct repository commit.
+            </p>
+
+            <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px;">
+              <button type="button" class="btn-admin btn-admin-primary" id="btnExportJs">
+                <span>Download blog-data.js</span>
+              </button>
+              <button type="button" class="btn-admin btn-admin-secondary" id="btnExportJson">
+                <span>Download Full JSON Backup</span>
+              </button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--admin-border); margin: 30px 0;">
+
+            <h3 style="font-size: 15px; color: #f87171; margin-bottom: 8px;">Factory Reset</h3>
+            <p style="color: var(--admin-text-muted); margin-bottom: 16px; font-size: 13px;">
+              Reset all modified articles and developments back to the original Novacrest verified seed documents.
+            </p>
+            <button type="button" class="btn-admin btn-admin-danger btn-admin-sm" id="btnResetFactory">
+              <span>Reset to Factory Seed Data</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: ARTICLE EDITOR MODAL
+       ====================================================================== -->
+  <div class="admin-modal-backdrop" id="articleEditorModal">
+    <div class="admin-modal-dialog">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalTitleText">Create New Market Article</h3>
+        <button type="button" class="modal-close-btn" id="closeArticleModalBtn">&times;</button>
+      </div>
+      <form id="articleEditorForm">
+        <div class="admin-modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modalArticleTitle">Article Headline *</label>
+            <input type="text" id="modalArticleTitle" class="form-control" placeholder="e.g., Abuja Land Title Verification: AGIS Protocol Explained" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalArticleSlug">URL Slug (ID) *</label>
+              <input type="text" id="modalArticleSlug" class="form-control" placeholder="e.g., abuja-land-title-verification" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalArticleCategory">Category *</label>
+              <select id="modalArticleCategory" class="form-control" required>
+                <!-- Dynamic options -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalArticleSubtitle">Subheadline / Context Hook</label>
+            <input type="text" id="modalArticleSubtitle" class="form-control" placeholder="A brief one-sentence subtitle framing the strategic importance for investors.">
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalArticleAuthor">Author Byline</label>
+              <input type="text" id="modalArticleAuthor" class="form-control" placeholder="e.g., Barr. Chukwuemeka Okonkwo">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalArticleReadTime">Reading Time</label>
+              <input type="text" id="modalArticleReadTime" class="form-control" placeholder="e.g., 6 min read">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalArticleCover">Cover Image Path / Asset</label>
+              <select id="modalArticleCover" class="form-control">
+                <option value="assets/images/masterplan-aerial.jpg">Masterplan Aerial Overview</option>
+                <option value="assets/images/nova-crest-palace.jpg">Nova Crest Palace (Maitama)</option>
+                <option value="assets/images/nova-crest-villa.jpg">Nova Crest Villa (Jabi Lake)</option>
+                <option value="assets/images/hero-luxury-residence.jpg">Luxury Architecture Exterior</option>
+                <option value="assets/images/about-luxury-interior.jpg">Palatial Interior</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalArticleDate">Display Date</label>
+              <input type="text" id="modalArticleDate" class="form-control" placeholder="e.g., September 2026">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalArticleSnippet">Card Excerpt / Short Summary *</label>
+            <textarea id="modalArticleSnippet" class="form-control" rows="2" placeholder="2 sentences highlighting the core message on blog catalog cards..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalArticleTakeaway">Key Takeaway Highlight Box</label>
+            <textarea id="modalArticleTakeaway" class="form-control" rows="2" placeholder="Crucial risk mitigation insight displayed prominently at top of reader..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalArticleProperty">Related Novacrest Development (Sidebar Spotlight)</label>
+            <select id="modalArticleProperty" class="form-control">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalArticleSections">Article Sections (Markdown format: ### Section Heading followed by paragraphs. Separate sections with ---)</label>
+            <textarea id="modalArticleSections" class="form-control" rows="8" placeholder="### 1. The FCT Legal Framework&#10;Write the body paragraphs here...&#10;&#10;---&#10;&#10;### 2. Cadastral Procedures&#10;Write the second section here..." required></textarea>
+          </div>
+
+          <div class="form-checkbox-row">
+            <label class="form-checkbox-label">
+              <input type="checkbox" id="modalArticleFeatured">
+              <span>Feature as Spotlight Article on Blog Homepage</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn-admin btn-admin-secondary" id="cancelArticleModalBtn">Cancel</button>
+          <button type="submit" class="btn-admin btn-admin-primary">
+            <span>Save & Publish Article</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: PROPERTY EDITOR MODAL
+       ====================================================================== -->
+  <div class="admin-modal-backdrop" id="propertyEditorModal">
+    <div class="admin-modal-dialog">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalPropTitleText">Add New Development Listing</h3>
+        <button type="button" class="modal-close-btn" id="closePropertyModalBtn">&times;</button>
+      </div>
+      <form id="propertyEditorForm">
+        <div class="admin-modal-body">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalPropName">Development Name *</label>
+              <input type="text" id="modalPropName" class="form-control" placeholder="e.g., Nova Crest Ridge" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalPropDistrict">Abuja District *</label>
+              <input type="text" id="modalPropDistrict" class="form-control" placeholder="e.g., Maitama, Guzape, Karshi" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalPropSubtitle">Tagline / Subtitle</label>
+            <input type="text" id="modalPropSubtitle" class="form-control" placeholder="e.g., Luxury Hillside Terraces with Panoramic FCT Views">
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalPropPriceNGN">Price (NGN) *</label>
+              <input type="number" id="modalPropPriceNGN" class="form-control" placeholder="e.g., 450000000" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalPropPriceUSD">Price (USD) *</label>
+              <input type="number" id="modalPropPriceUSD" class="form-control" placeholder="e.g., 300000" required>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalPropStatus">Status</label>
+              <select id="modalPropStatus" class="form-control">
+                <option value="Available">Available</option>
+                <option value="Selling Fast">Selling Fast</option>
+                <option value="Under Construction">Under Construction</option>
+                <option value="Sold Out">Sold Out</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalPropType">Typology</label>
+              <select id="modalPropType" class="form-control">
+                <option value="Mansion">Mansion</option>
+                <option value="Duplex">Duplex / Villa</option>
+                <option value="Terrace">Terrace House</option>
+                <option value="Land Plots">Residential Land Plots</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="modalPropBeds">Bedrooms</label>
+              <input type="number" id="modalPropBeds" class="form-control" placeholder="5">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="modalPropLandSize">Land / Built Size</label>
+              <input type="text" id="modalPropLandSize" class="form-control" placeholder="e.g., 850 sqm">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalPropImage">Main Image</label>
+            <select id="modalPropImage" class="form-control">
+              <option value="assets/images/nova-crest-palace.jpg">Nova Crest Palace (Maitama)</option>
+              <option value="assets/images/nova-crest-villa.jpg">Nova Crest Villa (Jabi Lake)</option>
+              <option value="assets/images/hero-luxury-residence.jpg">Luxury Architecture Residence</option>
+              <option value="assets/images/masterplan-aerial.jpg">Masterplan Horizon Aerial</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalPropDesc">Property Description</label>
+            <textarea id="modalPropDesc" class="form-control" rows="3" placeholder="Architectural and location summary..."></textarea>
+          </div>
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn-admin btn-admin-secondary" id="cancelPropertyModalBtn">Cancel</button>
+          <button type="submit" class="btn-admin btn-admin-primary">
+            <span>Save Property</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Root -->
+  <div class="admin-toast-container" id="adminToastContainer"></div>
+
+  <!-- Load Module Scripts -->
+  <script type="module" src="js/admin.js"></script>
+
+</body>
+</html>

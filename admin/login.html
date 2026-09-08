@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Login — NOVA CREST HOMES LIMITED</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="login-body">
+
+  <div class="login-card">
+    <div class="login-header">
+      <img src="../assets/images/novacrest-logo-white.png" alt="Novacrest Homes Ltd" class="login-brand-logo">
+      <h1 class="login-title">Executive Management Portal</h1>
+      <p class="login-subtitle">Secured AGIS & Content Management System</p>
+    </div>
+
+    <!-- Error Alert Box -->
+    <div id="loginAlert" class="login-alert" role="alert"></div>
+
+    <form id="adminLoginForm" novalidate>
+      <div class="form-group">
+        <label for="adminIdentifier" class="form-label">Administrator Account / Email</label>
+        <input 
+          type="text" 
+          id="adminIdentifier" 
+          class="form-control" 
+          placeholder="admin@novacresthomes.com" 
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="adminPassword" class="form-label">Security Access Password</label>
+        <input 
+          type="password" 
+          id="adminPassword" 
+          class="form-control" 
+          placeholder="••••••••••••" 
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <div class="form-checkbox-row">
+        <label class="form-checkbox-label">
+          <input type="checkbox" id="rememberMe" checked>
+          <span>Keep session active</span>
+        </label>
+        <a href="mailto:director@novacresthomes.com?subject=Admin%20Access%20Assistance" style="color: var(--admin-gold); text-decoration: none; font-size: 12px;">Support ↗</a>
+      </div>
+
+      <button type="submit" id="loginSubmitBtn" class="btn-admin btn-admin-primary" style="width: 100%;">
+        <span>Authorize & Access Portal</span>
+        <span>→</span>
+      </button>
+    </form>
+
+    <div class="login-demo-helper">
+      <strong>Default Access Credentials:</strong><br>
+      • User: <code>admin@novacresthomes.com</code> (or <code>admin</code>)<br>
+      • Password: <code>Novacrest2026!</code>
+    </div>
+
+    <div style="text-align: center; margin-top: 25px;">
+      <a href="../index.html" style="color: var(--admin-text-muted); text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+        <span>← Return to Public Website</span>
+      </a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { login, redirectIfAuthenticated } from './js/admin-auth.js';
+
+    // Redirect if already logged in
+    redirectIfAuthenticated();
+
+    const form = document.getElementById('adminLoginForm');
+    const alertBox = document.getElementById('loginAlert');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+    const idInput = document.getElementById('adminIdentifier');
+    const passInput = document.getElementById('adminPassword');
+    const rememberCheckbox = document.getElementById('rememberMe');
+
+    // Pre-fill remembered user
+    const remembered = localStorage.getItem('novacrest_admin_remembered');
+    if (remembered && idInput) {
+      idInput.value = remembered;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alertBox.style.display = 'none';
+
+      const id = idInput.value;
+      const pass = passInput.value;
+      const remember = rememberCheckbox.checked;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Verifying Credentials...</span>';
+
+      setTimeout(() => {
+        const result = login(id, pass, remember);
+        if (result.success) {
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirect = urlParams.get('redirect') || 'index.html';
+          window.location.href = redirect;
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Authorize & Access Portal</span> <span>→</span>';
+          alertBox.textContent = result.message;
+          alertBox.style.display = 'block';
+          passInput.value = '';
+          passInput.focus();
+        }
+      }, 400);
+    });
+  </script>
+
+</body>
+</html>

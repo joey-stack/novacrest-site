@@ -3,7 +3,7 @@
  * Prepared for dynamic rendering and future CMS / Admin Dashboard syncing
  */
 
-export const BLOG_POSTS = [
+const DEFAULT_BLOG_POSTS = [
   {
     id: "land-title-types-abuja",
     slug: "land-title-types-abuja",
@@ -260,3 +260,62 @@ export const BLOG_CATEGORIES = [
   { name: "Diaspora Concierge", slug: "diaspora" },
   { name: "Investment Guide", slug: "investment" }
 ];
+
+export function getBlogPosts() {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem('novacrest_blog_posts');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Error reading stored blog posts:', err);
+  }
+  return DEFAULT_BLOG_POSTS;
+}
+
+export function saveBlogPost(postData) {
+  const posts = getBlogPosts().slice();
+  const existingIdx = posts.findIndex(p => p.id === postData.id || (postData.slug && p.slug === postData.slug));
+  if (existingIdx >= 0) {
+    posts[existingIdx] = { ...posts[existingIdx], ...postData };
+  } else {
+    posts.unshift(postData);
+  }
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.setItem('novacrest_blog_posts', JSON.stringify(posts));
+  }
+  return posts;
+}
+
+export function deleteBlogPost(id) {
+  const posts = getBlogPosts().filter(p => p.id !== id && p.slug !== id);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.setItem('novacrest_blog_posts', JSON.stringify(posts));
+  }
+  return posts;
+}
+
+export function resetBlogPosts() {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.removeItem('novacrest_blog_posts');
+  }
+  return DEFAULT_BLOG_POSTS;
+}
+
+export const BLOG_POSTS = getBlogPosts();
+
+if (typeof window !== 'undefined') {
+  window.NovacrestBlogStore = {
+    getBlogPosts,
+    saveBlogPost,
+    deleteBlogPost,
+    resetBlogPosts,
+    DEFAULT_BLOG_POSTS
+  };
+}
+

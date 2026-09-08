@@ -3,8 +3,10 @@
  * Powers blog.html (archive, search, filters) and article.html (reader, related posts)
  */
 
-import { BLOG_POSTS, BLOG_CATEGORIES } from './blog-data.js';
+import { getBlogPosts, BLOG_CATEGORIES } from './blog-data.js';
 import { PROPERTIES } from './properties-data.js';
+
+let BLOG_POSTS = getBlogPosts();
 
 document.addEventListener('DOMContentLoaded', () => {
   const isBlogArchive = !!document.getElementById('blogGridContainer');
@@ -59,6 +61,7 @@ function initBlogArchive() {
   }
 
   function renderArchive() {
+    BLOG_POSTS = getBlogPosts();
     let filtered = BLOG_POSTS.filter(post => {
       const matchesCat = activeCategory === 'all' || post.categorySlug === activeCategory;
       const matchesSearch = !searchQuery || 
@@ -181,6 +184,7 @@ function initBlogArchive() {
    Article Reader Controller (article.html)
    ========================================================================== */
 function initArticleReader() {
+  BLOG_POSTS = getBlogPosts();
   const params = new URLSearchParams(window.location.search);
   const postId = params.get('id') || params.get('slug') || BLOG_POSTS[0].id;
 

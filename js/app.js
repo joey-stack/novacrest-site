@@ -201,6 +201,23 @@ function initConsultationModal() {
       // Construct WhatsApp direct message as fallback
       const waSummary = encodeURIComponent(`*New Consultation Request*\nName: ${name}\nPhone: ${phone}\nInterest: ${interest}\nNotes: ${message}`);
       
+      // Save lead to local storage for Admin Dashboard
+      try {
+        const existingLeads = JSON.parse(localStorage.getItem('novacrest_leads') || '[]');
+        existingLeads.unshift({
+          id: 'lead-' + Date.now(),
+          name,
+          phone,
+          interest,
+          message,
+          source: 'Consultation Modal',
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('novacrest_leads', JSON.stringify(existingLeads));
+      } catch (err) {
+        console.warn('Lead local save error:', err);
+      }
+
       const successBox = document.getElementById('consultSuccessBox');
       form.style.display = 'none';
       if (successBox) {
