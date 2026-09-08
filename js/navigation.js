@@ -13,28 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
   initConsultationTriggers();
   initFaqAccordion();
   initScrollHighlight();
-  initCounterAnimation();
-  initSectionReveals();
-  initFilterPillGliders();
-  initCardStaggerObserver();
 });
 
 function initNavbarScroll() {
   const header = document.querySelector('.site-header');
   if (!header) return;
 
-  const handleScroll = () => {
-    if (window.scrollY > 80) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 30) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
-  };
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll();
+  });
 }
-
 
 function initActiveNavLink() {
   const currentPath = window.location.pathname.toLowerCase();
@@ -254,174 +246,5 @@ function initScrollHighlight() {
     updateHighlight();
   });
 }
-
-/**
- * Understated Stat Counters: Smoothly increment numbers when scrolled into view
- */
-export function initCounterAnimation() {
-  const counterEls = document.querySelectorAll('.about-stat-quad-number, .stat-number');
-  if (!counterEls.length) return;
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const el = entry.target;
-      obs.unobserve(el);
-
-      const rawText = el.textContent.trim();
-      const match = rawText.match(/^([^\d]*)([\d,.]+)(.*)$/);
-      if (!match) return;
-
-      const prefix = match[1] || '';
-      const numStr = match[2].replace(/,/g, '');
-      const suffix = match[3] || '';
-      const targetVal = parseFloat(numStr);
-      if (isNaN(targetVal)) return;
-
-      const isFloat = numStr.includes('.');
-      const decimals = isFloat ? numStr.split('.')[1].length : 0;
-      const duration = 1200;
-      const startTime = performance.now();
-
-      function step(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const currentVal = targetVal * eased;
-
-        el.textContent = `${prefix}${currentVal.toFixed(decimals)}${suffix}`;
-
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          el.textContent = rawText;
-        }
-      }
-
-      requestAnimationFrame(step);
-    });
-  }, { threshold: 0.15 });
-
-  counterEls.forEach(el => observer.observe(el));
-}
-
-/**
- * Calm Section Entrance Reveals
- */
-export function initSectionReveals() {
-  const targets = document.querySelectorAll('.site-footer, .section-reveal, .about-merged-section, .values-grid');
-  if (!targets.length) return;
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  targets.forEach(target => observer.observe(target));
-}
-
-/**
- * Gliding Filter Pill (Keri Signature): Slides indicator between active selections
- */
-export function updateGlider(tabsContainer, activeBtn) {
-  if (!tabsContainer || !activeBtn) return;
-
-  let indicator = tabsContainer.querySelector('.filter-tab-indicator');
-  if (!indicator) {
-    indicator = document.createElement('div');
-    indicator.className = 'filter-tab-indicator';
-    tabsContainer.prepend(indicator);
-  }
-  tabsContainer.classList.add('has-glider');
-
-  const left = activeBtn.offsetLeft;
-  const width = activeBtn.offsetWidth;
-
-  if (width > 0) {
-    indicator.style.transform = `translateX(${left}px)`;
-    indicator.style.width = `${width}px`;
-    indicator.classList.add('is-visible');
-  }
-}
-
-export function initFilterPillGliders() {
-  const tabsContainers = document.querySelectorAll('.filter-tabs');
-  tabsContainers.forEach(container => {
-    // Avoid double attaching if already initialized
-    if (container.dataset.gliderReady) return;
-    container.dataset.gliderReady = 'true';
-
-    const activeBtn = container.querySelector('.filter-tab-btn.active') || container.querySelector('.filter-tab-btn');
-    if (activeBtn) {
-      setTimeout(() => updateGlider(container, activeBtn), 50);
-    }
-
-    container.querySelectorAll('.filter-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        container.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        updateGlider(container, btn);
-      });
-    });
-  });
-
-  window.addEventListener('resize', () => {
-    tabsContainers.forEach(container => {
-      const activeBtn = container.querySelector('.filter-tab-btn.active');
-      if (activeBtn) {
-        updateGlider(container, activeBtn);
-      }
-    });
-  }, { passive: true });
-}
-
-/**
- * Card Stagger Viewport Observer & Gauge Width Trigger
- */
-export function initCardStaggerObserver() {
-  const cards = document.querySelectorAll('.property-card:not(.observer-attached)');
-  if (!cards.length) return;
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    let index = 0;
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const card = entry.target;
-        obs.unobserve(card);
-        setTimeout(() => {
-          card.classList.add('is-revealed');
-          animateCardGauge(card);
-        }, index * 60);
-        index++;
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  cards.forEach(card => {
-    card.classList.add('observer-attached');
-    observer.observe(card);
-  });
-}
-
-export function animateCardGauge(card) {
-  const segs = card.querySelectorAll('.gauge-seg');
-  segs.forEach(seg => {
-    const targetWidth = seg.dataset.targetWidth || seg.style.width;
-    if (targetWidth) {
-      seg.dataset.targetWidth = targetWidth;
-      seg.style.width = '0%';
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          seg.style.width = targetWidth;
-        }, 80);
-      });
-    }
-  });
-}
-
 
 

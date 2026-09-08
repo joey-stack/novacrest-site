@@ -4,7 +4,6 @@
 
 import { PROPERTIES } from './properties-data.js';
 import { getDualPriceTag } from './currency.js';
-import { updateGlider, initCardStaggerObserver } from './navigation.js';
 
 let activeCategory = 'all';
 let selectedDistrict = 'all';
@@ -50,14 +49,9 @@ export function initFilterEngine(onSelectPropertyCallback) {
   const tabs = document.querySelectorAll('.filter-tab-btn');
   tabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
-      const btn = e.currentTarget;
-      const tabsContainer = btn.closest('.filter-tabs');
-      if (tabsContainer) {
-        tabsContainer.querySelectorAll('.filter-tab-btn').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        updateGlider(tabsContainer, btn);
-      }
-      activeCategory = btn.dataset.category || 'all';
+      tabs.forEach(t => t.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      activeCategory = e.currentTarget.dataset.category;
       renderProperties(onSelectPropertyCallback);
     });
   });
@@ -196,62 +190,51 @@ export function renderProperties(onSelectPropertyCallback) {
             ${specsHtml}
           </div>
 
-            <!-- Novacrest Ownership Gauge (Section 22 & Spec Sheet Panel 06) -->
-            <div class="ownership-gauge">
-              <div class="gauge-header">
-                <span class="gauge-label">AVAILABILITY</span>
-                <span class="gauge-status-val">${avail.available}% AVAILABLE</span>
-              </div>
-              <div class="gauge-bar">
-                <div class="gauge-seg seg-available" data-target-width="${avail.available}%" style="width: 0%;"></div>
-                <div class="gauge-seg seg-reserved" data-target-width="${avail.reserved}%" style="width: 0%;"></div>
-                <div class="gauge-seg seg-sold" data-target-width="${avail.sold}%" style="width: 0%;"></div>
-              </div>
-              <div class="gauge-legend">
-                <span>Available ${avail.available}%</span>
-                <span>·</span>
-                <span>Reserved ${avail.reserved}%</span>
-                <span>·</span>
-                <span>Sold ${avail.sold}%</span>
-              </div>
+          <!-- Novacrest Ownership Gauge (Section 22 & Spec Sheet Panel 06) -->
+          <div class="ownership-gauge">
+            <div class="gauge-header">
+              <span class="gauge-label">AVAILABILITY</span>
+              <span class="gauge-status-val">${avail.available}% AVAILABLE</span>
             </div>
-
-            <div class="card-footer-row">
-              <div class="card-price-group">
-                <div class="price-primary">${prices.primary}</div>
-                <div class="price-installment">${monthlyText}</div>
-              </div>
-              <div class="card-actions">
-                <button class="btn btn-primary btn-sm btn-view-details" data-id="${item.id}">
-                  <span>View Details</span>
-                  <span class="btn-arrow">→</span>
-                </button>
-              </div>
+            <div class="gauge-bar">
+              <div class="gauge-seg seg-available" style="width: ${avail.available}%"></div>
+              <div class="gauge-seg seg-reserved" style="width: ${avail.reserved}%"></div>
+              <div class="gauge-seg seg-sold" style="width: ${avail.sold}%"></div>
+            </div>
+            <div class="gauge-legend">
+              <span>Available ${avail.available}%</span>
+              <span>·</span>
+              <span>Reserved ${avail.reserved}%</span>
+              <span>·</span>
+              <span>Sold ${avail.sold}%</span>
             </div>
           </div>
-        </article>
-      `;
-    }).join('');
 
-    // Attach view details listeners
-    container.querySelectorAll('.btn-view-details').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
-        const property = PROPERTIES.find(p => p.id === id);
-        if (property && onSelectPropertyCallback) {
-          onSelectPropertyCallback(property);
-        }
-      });
+          <div class="card-footer-row">
+            <div class="card-price-group">
+              <div class="price-primary">${prices.primary}</div>
+              <div class="price-installment">${monthlyText}</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-primary btn-sm btn-view-details" data-id="${item.id}">
+                <span>View Details</span>
+                <span class="btn-arrow">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // Attach view details listeners
+  container.querySelectorAll('.btn-view-details').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.currentTarget.dataset.id;
+      const property = PROPERTIES.find(p => p.id === id);
+      if (property && onSelectPropertyCallback) {
+        onSelectPropertyCallback(property);
+      }
     });
-
-    // Trigger viewport card stagger reveal and availability gauge animation
-    initCardStaggerObserver();
-
-    // Sync gliding filter pill indicator
-    const tabsContainer = document.getElementById('propertiesFilterTabs') || document.querySelector('.filter-tabs');
-    const activeTab = tabsContainer?.querySelector('.filter-tab-btn.active');
-    if (tabsContainer && activeTab) {
-      setTimeout(() => updateGlider(tabsContainer, activeTab), 60);
-    }
-  }
-
+  });
+}

@@ -129,18 +129,12 @@
   --text-caption: 11px;          /* Micro information */
 
   /* ==========================================================================
-     35. MOTION SYSTEM (Architectural, Restrained, Avoid Bouncy Springs)
+     35. MOTION SYSTEM (Architectural, Avoid Bouncy)
      ========================================================================== */
-  --ease-architectural: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --motion-micro: 150ms;         /* hover, micro-controls, pill glider */
-  --motion-fast: 150ms;          /* backwards compatibility */
-  --motion-card: 300ms;          /* cards, panels, drawers */
-  --motion-std: 300ms;           /* backwards compatibility */
-  --motion-lens: 450ms;          /* photography hover zoom, crossfades */
-  --motion-slow: 450ms;          /* backwards compatibility */
-  --motion-reveal: 600ms;        /* viewport reveals, section entrances */
-  --motion-gauge: 600ms;         /* ownership availability bar animation */
-  --motion-hero-scale: 800ms;    /* hero visual reveal scale settle */
+  --motion-fast: 150ms;          /* hover, icon transitions, small controls */
+  --motion-std: 250ms;           /* cards, menus, panels */
+  --motion-slow: 450ms;          /* page transitions, image reveals */
+  --ease-architectural: cubic-bezier(.2, .8, .2, 1);
 
   /* ==========================================================================
      SEMANTIC ALIASES (Backwards compatibility & UI Mapping)
@@ -682,21 +676,5 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
-}
-
-/* ==========================================================================
-   Accessibility & Reduced Motion
-   ========================================================================== */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-    transform: none !important;
-    opacity: 1 !important;
-  }
 }
 

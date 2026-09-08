@@ -167,12 +167,6 @@
   width: 100%;
   height: 520px;
   object-fit: cover;
-  transition: opacity 300ms var(--ease-architectural);
-  will-change: opacity;
-}
-
-.gallery-main-img.fade-out {
-  opacity: 0.85;
 }
 
 .gallery-sub-col {
@@ -185,27 +179,12 @@
   width: 100%;
   height: 252px;
   object-fit: cover;
-  cursor: pointer;
-  border-radius: var(--radius-card-media, 4px);
-  transition: transform var(--motion-card) var(--ease-architectural), opacity var(--motion-card) var(--ease-architectural), box-shadow var(--motion-card) var(--ease-architectural);
-  will-change: transform;
-}
-
-.gallery-sub-img:hover {
-  transform: scale(1.02);
-  opacity: 0.94;
-  box-shadow: var(--shadow-2);
-}
-
-.gallery-sub-img.active {
-  outline: 2px solid var(--color-crimson, #842d45);
 }
 
 .property-main-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: var(--space-8);
-  align-items: start;
 }
 
 @media (max-width: 992px) {
@@ -222,9 +201,7 @@
   position: sticky;
   top: 96px;
   box-shadow: var(--shadow-2);
-  will-change: transform;
 }
-
 
 /* Proximity Table */
 .proximity-table {
