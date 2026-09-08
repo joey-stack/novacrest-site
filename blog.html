@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abuja Locations & District Guide — NOVA CREST HOMES LIMITED</title>
-  <meta name="description" content="In-depth real estate guide to Abuja districts: Maitama, Asokoro, Guzape, Jabi, Karshi, Kuje, Lokogoma, Airport Road. Distance to airport and CBD.">
+  <title>Journal & Market Intelligence — NOVA CREST HOMES LIMITED | Abuja Real Estate Blog</title>
+  <meta name="description" content="Authoritative analysis on Abuja real estate: AGIS title diligence, infrastructure forecasts, neighborhood comparisons, and institutional diaspora guides.">
   
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/components.css">
@@ -20,14 +20,14 @@
         <img src="assets/images/novacrest-logo-dark.png" alt="Novacrest Homes Ltd" class="brand-logo-img logo-dark">
       </a>
 
-      <!-- 6-7 Navigation Menu Items -->
+      <!-- Navigation Menu Items -->
       <nav class="nav-menu" id="primaryNavMenu">
         <a href="index.html" class="nav-link">Home</a>
         <a href="about.html" class="nav-link">About Us</a>
         <a href="properties.html" class="nav-link">Properties</a>
-        <a href="locations.html" class="nav-link active">Locations</a>
+        <a href="locations.html" class="nav-link">Locations</a>
         <a href="services.html" class="nav-link">Services</a>
-        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="blog.html" class="nav-link active">Blog</a>
         <a href="contact.html" class="nav-link">Contact</a>
       </nav>
 
@@ -52,42 +52,75 @@
   </header>
 
   <!-- PAGE HERO BANNER -->
-  <section class="page-hero-banner banner-locations">
+  <section class="page-hero-banner banner-insights">
     <div class="container">
       <div class="breadcrumbs">
         <a href="index.html">Home</a>
         <span>/</span>
-        <span class="current">Locations</span>
+        <span class="current">Blog & Market Intelligence</span>
       </div>
-      <div class="section-eyebrow">ABUJA CADASTRAL INTELLIGENCE</div>
-      <h1 class="page-title">Explore Prime <br><span>Abuja Districts</span></h1>
+      <div class="section-eyebrow">NOVACREST JOURNAL & ADVISORY</div>
+      <h1 class="page-title">Abuja Real Estate <br><span>Market Intelligence & Guides</span></h1>
       <p class="page-subtitle">
-        A strategic district-by-district breakdown of Nigeria's Federal Capital Territory. Analyze transit distances to Nnamdi Azikiwe Airport, Central Business District, major arterial highways, and historic capital appreciation yields.
+        Data-driven market forecasts, legal title breakdowns, and strategic wealth playbooks for diaspora and institutional capital in Abuja, Nigeria.
       </p>
     </div>
   </section>
 
-  <!-- LOCATIONS GUIDE -->
+  <!-- BLOG ARCHIVE SECTION -->
   <section class="section-padding">
     <div class="container">
-      
-      <div class="section-header" style="text-align: left; margin-bottom: 3rem;">
-        <div class="section-eyebrow">TRANSIT & PROXIMITY INDEX</div>
-        <h2 style="font-size: 2.2rem; color: var(--color-ink-900);">Abuja Masterplan Corridors</h2>
-        <p style="color: var(--color-slate-500); max-width: 780px;">
-          Abuja was conceived by Kenzo Tange as a planned capital divided into distinct investment phases. Proximity to airport expressways and diplomatic nodes governs long-term asset valuation.
-        </p>
+
+      <!-- Featured Spotlight Article (Mounted by js/blog.js) -->
+      <div id="blogFeaturedContainer"></div>
+
+      <!-- Filter Tabs & Search Toolbar -->
+      <div class="filter-toolbar" style="margin-bottom: 2rem;">
+        <div class="filter-tabs" id="blogFilterTabs">
+          <!-- Populated by js/blog.js -->
+        </div>
+
+        <!-- Keyword Search Box -->
+        <div class="strip-input-box" style="max-width: 320px; margin-left: auto; width: 100%;">
+          <svg class="strip-search-svg" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M21 21l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="blogSearchInput" class="strip-search-field" placeholder="Search guides & dossiers..." aria-label="Search articles">
+        </div>
       </div>
 
-      <!-- District Cards Grid -->
-      <div class="locations-grid" id="locationsGridContainer">
-        <!-- Injected dynamically by script below -->
+      <!-- Filter Meta Counter -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 13px; color: var(--color-slate-500);">
+        <span id="blogArticlesCount">Showing all articles</span>
       </div>
 
+      <!-- Articles Grid (Mounted by js/blog.js) -->
+      <div class="blog-grid" id="blogGridContainer">
+        <!-- Rendered by js/blog.js -->
+      </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- EXECUTIVE CONSULTATION CTA BANNER -->
+  <section class="container" style="margin-bottom: 5rem;">
+    <div class="framer-cta-banner">
+      <h2 class="framer-cta-title">Require a Tailored Due Diligence Report on an Abuja Parcel?</h2>
+      <p class="framer-cta-desc">
+        Our conveyancing and cadastral directors conduct independent AGIS title checks and surveyor beacon verifications before you allocate investment funds.
+      </p>
+      <div class="framer-cta-buttons">
+        <a href="https://wa.me/2348166800142?text=Hello%20Novacrest%20Homes%20Ltd,%20I%20would%20like%20to%20request%20due%20diligence%20on%20an%20Abuja%20property." target="_blank" rel="noopener" class="btn btn-whatsapp">
+          <span>Request Title Verification (WhatsApp)</span>
+        </a>
+        <a href="contact.html" class="btn btn-secondary">
+          <span>Book Virtual Briefing</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-top-grid">
@@ -169,61 +202,8 @@
     <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
   </a>
 
-  <script type="module">
-    import './js/navigation.js';
-    import { ABUJA_DISTRICTS } from './js/properties-data.js';
-
-    const container = document.getElementById('locationsGridContainer');
-    if (container) {
-      container.innerHTML = ABUJA_DISTRICTS.map(dist => `
-        <div class="location-card" id="${dist.id}">
-          <div class="location-card-header">
-            <div>
-              <span class="location-badge-tier">${dist.tier}</span>
-              <h3 class="location-name">${dist.name}</h3>
-            </div>
-            <div class="location-growth-pill" title="Projected Capital Growth Rate">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-              <span>${dist.growthIndex}</span>
-            </div>
-          </div>
-
-          <p class="location-headline">${dist.headline}</p>
-          
-          <div class="location-metrics">
-            <div class="metric-row">
-              <span class="metric-label">To Airport:</span>
-              <span class="metric-value">${dist.distanceAirport}</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">To CBD:</span>
-              <span class="metric-value">${dist.distanceCBD}</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Major Corridors:</span>
-              <span class="metric-value">${dist.majorRoads}</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Price Bracket:</span>
-              <span class="metric-value text-bronze">${dist.priceRange}</span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-label">Prime Demand:</span>
-              <span class="metric-value">${dist.popularFor}</span>
-            </div>
-          </div>
-
-          <p class="location-character">
-            ${dist.character}
-          </p>
-
-          <a href="properties.html?district=${dist.id}" class="btn btn-outline-gold location-action-btn">
-            <span>Explore Properties in ${dist.name}</span>
-            <span class="btn-arrow">→</span>
-          </a>
-        </div>
-      `).join('');
-    }
-  </script>
+  <!-- SCRIPTS -->
+  <script type="module" src="js/navigation.js"></script>
+  <script type="module" src="js/blog.js"></script>
 </body>
 </html>

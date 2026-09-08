@@ -338,10 +338,10 @@ function initBlogModals() {
         <span class="insight-badge">${post.category}</span>
         <span class="insight-time">${post.readTime}</span>
       </div>
-      <h3 class="insight-title"><a href="insights.html#${post.id}">${post.title}</a></h3>
+      <h3 class="insight-title"><a href="article.html?id=${post.id}">${post.title}</a></h3>
       <p class="insight-snippet">${post.snippet}</p>
       <div class="insight-footer">
-        <a href="insights.html#${post.id}" class="insight-readmore">
+        <a href="article.html?id=${post.id}" class="insight-readmore">
           <span>Read Analysis</span>
           <span class="btn-arrow">→</span>
         </a>
