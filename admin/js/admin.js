@@ -16,13 +16,15 @@ import {
   saveBlogPost, 
   deleteBlogPost, 
   resetBlogPosts, 
+  syncAllArticlesToFirestore,
   BLOG_CATEGORIES 
 } from '../../js/blog-data.js';
 import { 
   getProperties, 
   saveProperty, 
   deleteProperty, 
-  resetProperties 
+  resetProperties,
+  syncAllPropertiesToFirestore
 } from '../../js/properties-data.js';
 
 // Enforce authentication gate immediately
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initUserProfile();
   initSidebarCollapse();
   initAiSettings();
+  initFirestoreSync();
   initNavigationTabs();
   initKPIs();
   initArticlesManager();
@@ -606,6 +609,32 @@ function initAiSettings() {
       showToast('AI & Oxylabs credentials saved successfully!', 'success');
     });
   }
+}
+
+/* ==========================================================================
+   Google Cloud Firestore Sync Controller
+   ========================================================================== */
+function initFirestoreSync() {
+  const syncBtn = document.getElementById('btnSyncFirestore');
+  if (!syncBtn) return;
+
+  syncBtn.addEventListener('click', async () => {
+    syncBtn.disabled = true;
+    const origHtml = syncBtn.innerHTML;
+    syncBtn.innerHTML = '<span>⏳ Syncing to Cloud...</span>';
+
+    try {
+      const propCount = await syncAllPropertiesToFirestore();
+      const articleCount = await syncAllArticlesToFirestore();
+      alert(`🔥 Cloud Sync Complete!\n\nSuccessfully synced ${propCount} Properties and ${articleCount} Articles to Google Cloud Firestore (novacrest-site).`);
+    } catch (err) {
+      console.error('[Firestore Sync Error]', err);
+      alert('Firestore Cloud Sync: ' + (err.message || 'Failed to sync documents.'));
+    } finally {
+      syncBtn.disabled = false;
+      syncBtn.innerHTML = origHtml;
+    }
+  });
 }
 
 async function generateAiInvestmentThesis() {

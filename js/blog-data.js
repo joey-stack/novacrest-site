@@ -3,6 +3,8 @@
  * Prepared for dynamic rendering and future CMS / Admin Dashboard syncing
  */
 
+import { db, collection, doc, getDocs, setDoc, deleteDoc } from './firebase-config.js';
+
 const DEFAULT_BLOG_POSTS = [
   {
     id: "land-title-types-abuja",
@@ -278,6 +280,33 @@ export function getBlogPosts() {
   return DEFAULT_BLOG_POSTS;
 }
 
+/**
+ * Fetch live blog article documents from Google Cloud Firestore
+ */
+export async function fetchFirestoreBlogPosts() {
+  try {
+    if (!db) return getBlogPosts();
+    const querySnapshot = await getDocs(collection(db, "articles"));
+    const firestorePosts = [];
+    querySnapshot.forEach((docSnap) => {
+      firestorePosts.push(docSnap.data());
+    });
+
+    if (firestorePosts.length > 0) {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('novacrest_blog_posts', JSON.stringify(firestorePosts));
+      }
+      return firestorePosts;
+    }
+  } catch (err) {
+    console.warn('[Firestore] Falling back to local articles dataset:', err);
+  }
+  return getBlogPosts();
+}
+
+/**
+ * Save article to both local cache and Google Cloud Firestore
+ */
 export function saveBlogPost(postData) {
   const posts = getBlogPosts().slice();
   const existingIdx = posts.findIndex(p => p.id === postData.id || (postData.slug && p.slug === postData.slug));
@@ -289,15 +318,50 @@ export function saveBlogPost(postData) {
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.setItem('novacrest_blog_posts', JSON.stringify(posts));
   }
+
+  // Cloud Firestore Sync
+  const articleId = postData.id || postData.slug;
+  if (db && articleId) {
+    setDoc(doc(db, "articles", articleId), postData, { merge: true })
+      .then(() => console.log(`[Firestore] Article '${postData.title}' saved to cloud.`))
+      .catch(err => console.error('[Firestore Error]', err));
+  }
+
   return posts;
 }
 
+/**
+ * Delete article from both local cache and Google Cloud Firestore
+ */
 export function deleteBlogPost(id) {
   const posts = getBlogPosts().filter(p => p.id !== id && p.slug !== id);
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.setItem('novacrest_blog_posts', JSON.stringify(posts));
   }
+
+  // Cloud Firestore Delete
+  if (db && id) {
+    deleteDoc(doc(db, "articles", id))
+      .then(() => console.log(`[Firestore] Article '${id}' deleted from cloud.`))
+      .catch(err => console.error('[Firestore Error]', err));
+  }
+
   return posts;
+}
+
+/**
+ * One-Click Bulk Cloud Sync: Uploads all blog posts to Google Cloud Firestore
+ */
+export async function syncAllArticlesToFirestore() {
+  if (!db) throw new Error('Firestore not initialized');
+  const posts = getBlogPosts();
+  let count = 0;
+  for (const post of posts) {
+    const postKey = post.id || post.slug;
+    await setDoc(doc(db, "articles", postKey), post, { merge: true });
+    count++;
+  }
+  return count;
 }
 
 export function resetBlogPosts() {
@@ -312,8 +376,10 @@ export const BLOG_POSTS = getBlogPosts();
 if (typeof window !== 'undefined') {
   window.NovacrestBlogStore = {
     getBlogPosts,
+    fetchFirestoreBlogPosts,
     saveBlogPost,
     deleteBlogPost,
+    syncAllArticlesToFirestore,
     resetBlogPosts,
     DEFAULT_BLOG_POSTS
   };
