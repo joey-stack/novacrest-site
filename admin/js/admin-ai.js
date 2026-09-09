@@ -7,11 +7,16 @@ const GEMINI_KEY_STORAGE = 'novacrest_gemini_api_key';
 const OXYLABS_USER_STORAGE = 'novacrest_oxylabs_user';
 const OXYLABS_PASS_STORAGE = 'novacrest_oxylabs_pass';
 
+// Pre-configured codebase credentials (placeholders for instant zero-config AI analysis)
+const DEFAULT_GEMINI_KEY = '';
+const DEFAULT_OXYLABS_USER = '';
+const DEFAULT_OXYLABS_PASS = '';
+
 export function getAiCredentials() {
   return {
-    geminiKey: localStorage.getItem(GEMINI_KEY_STORAGE) || '',
-    oxylabsUser: localStorage.getItem(OXYLABS_USER_STORAGE) || '',
-    oxylabsPass: localStorage.getItem(OXYLABS_PASS_STORAGE) || ''
+    geminiKey: localStorage.getItem(GEMINI_KEY_STORAGE) || DEFAULT_GEMINI_KEY,
+    oxylabsUser: localStorage.getItem(OXYLABS_USER_STORAGE) || DEFAULT_OXYLABS_USER,
+    oxylabsPass: localStorage.getItem(OXYLABS_PASS_STORAGE) || DEFAULT_OXYLABS_PASS
   };
 }
 
