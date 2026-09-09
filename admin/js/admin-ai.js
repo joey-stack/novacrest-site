@@ -161,24 +161,26 @@ Instructions:
  * Call Serverless Backend Proxy (/api/market-analysis) if deployed on Netlify / Vercel
  */
 export async function fetchServerlessMarketAnalysis(propData) {
-  try {
-    const res = await fetch('/.netlify/functions/market-analysis', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ propData })
-    });
+  const endpoints = ['/api/market-analysis', '/.netlify/functions/market-analysis'];
 
-    if (!res.ok) {
-      return null;
-    }
+  for (const endpoint of endpoints) {
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propData })
+      });
 
-    const data = await res.json();
-    if (data && data.success && data.thesis) {
-      return { thesis: data.thesis, source: data.source };
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && data.thesis) {
+          return { thesis: data.thesis, source: data.source };
+        }
+      }
+    } catch (err) {
+      // Continue to next endpoint or fallback
     }
-    return null;
-  } catch (err) {
-    return null;
   }
+  return null;
 }
 
