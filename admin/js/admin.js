@@ -8,7 +8,8 @@ import {
   getAiCredentials, 
   saveAiCredentials, 
   fetchOxylabsMarketData, 
-  generateLiveGeminiThesis 
+  generateLiveGeminiThesis,
+  fetchServerlessMarketAnalysis
 } from './admin-ai.js';
 import { 
   getBlogPosts, 
@@ -630,14 +631,22 @@ async function generateAiInvestmentThesis() {
     btn.innerHTML = '<span>✨ Analyzing Market Data...</span>';
   }
 
-  // Step 1: Attempt Oxylabs live web scrape (if credentials configured)
-  const liveScrapedContext = await fetchOxylabsMarketData(propData.district, propData.type);
+  // Step 1: Check Netlify Serverless Backend Proxy (/api/market-analysis or /.netlify/functions/market-analysis)
+  const serverlessRes = await fetchServerlessMarketAnalysis(propData);
 
-  // Step 2: Attempt Google Gemini Live LLM Inference (if free-tier key configured)
-  const liveThesis = await generateLiveGeminiThesis(propData, liveScrapedContext);
+  let finalThesis = serverlessRes?.thesis || null;
+  let sourceTag = serverlessRes?.source || null;
 
-  let finalThesis = liveThesis;
-  let sourceTag = liveScrapedContext ? 'Google Gemini LLM & Oxylabs Live Web Scrape' : 'Google Gemini LLM (Free Tier)';
+  // Step 2: Fall back to direct browser fetch if serverless endpoint is unconfigured or unavailable
+  if (!finalThesis) {
+    const liveScrapedContext = await fetchOxylabsMarketData(propData.district, propData.type);
+    const liveThesis = await generateLiveGeminiThesis(propData, liveScrapedContext);
+
+    if (liveThesis) {
+      finalThesis = liveThesis;
+      sourceTag = liveScrapedContext ? 'Google Gemini LLM & Oxylabs Live Web Scrape' : 'Google Gemini LLM (Free Tier)';
+    }
+  }
 
   // Step 3: Graceful dynamic market calculation if live API key not set
   if (!finalThesis) {

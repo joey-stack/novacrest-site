@@ -156,3 +156,29 @@ Instructions:
     return null;
   }
 }
+
+/**
+ * Call Serverless Backend Proxy (/api/market-analysis) if deployed on Netlify / Vercel
+ */
+export async function fetchServerlessMarketAnalysis(propData) {
+  try {
+    const res = await fetch('/.netlify/functions/market-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ propData })
+    });
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+    if (data && data.success && data.thesis) {
+      return { thesis: data.thesis, source: data.source };
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+

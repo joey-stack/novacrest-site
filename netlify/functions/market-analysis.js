@@ -1,0 +1,134 @@
+/**
+ * NOVACREST HOMES LIMITED — Netlify Serverless Function
+ * Proxy Oxylabs & Gemini AI without exposing secret keys.
+ */
+
+export const handler = async (event, context) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
+
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
+
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+  }
+
+  try {
+    const { propData } = JSON.parse(event.body || '{}');
+
+    if (!propData || !propData.district) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing propData' }) };
+    }
+
+    const oxylabsUser = process.env.OXYLABS_USER;
+    const oxylabsPass = process.env.OXYLABS_PASS;
+    const geminiKey = process.env.GEMINI_KEY || process.env.GEMINI_API_KEY;
+
+    if (!geminiKey) {
+      return { 
+        statusCode: 500, 
+        headers, 
+        body: JSON.stringify({ error: 'Missing GEMINI_KEY environment variable on Netlify' }) 
+      };
+    }
+
+    // Step 1: Scrape live search context via Oxylabs
+    let liveScrapedContext = null;
+    if (oxylabsUser && oxylabsPass) {
+      try {
+        const query = `Abuja ${propData.district} ${propData.type || 'real estate'} land price per sqm 2026`;
+        const oxyRes = await fetch('https://realtime.oxylabs.io/v1/queries', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + Buffer.from(`${oxylabsUser}:${oxylabsPass}`).toString('base64')
+          },
+          body: JSON.stringify({
+            source: 'google_search',
+            domain: 'com',
+            query: query,
+            start_page: 1,
+            pages: 1,
+            parse: true
+          })
+        });
+
+        if (oxyRes.ok) {
+          const oxyData = await oxyRes.json();
+          const organicResults = oxyData?.results?.[0]?.content?.results?.organic || [];
+          liveScrapedContext = organicResults
+            .slice(0, 4)
+            .map(r => `${r.title}: ${r.snippet || r.desc || ''}`)
+            .filter(s => s && !s.endsWith(': '))
+            .join('\n');
+        }
+      } catch (oxyErr) {
+        console.warn('[Netlify Oxylabs Exception]', oxyErr);
+      }
+    }
+
+    // Step 2: Generate Gemini AI Investment Thesis
+    const prompt = `You are the Chief Real Estate Investment Strategist for Novacrest Homes Limited in Abuja, Nigeria.
+Analyze the following development and write a compelling, 2-3 sentence executive Investment Thesis and Capital Return Analysis for diaspora and institutional investors.
+
+Property Specifications:
+- Name: ${propData.name}
+- District: ${propData.district}, Abuja
+- Typology: ${propData.type}
+- Price NGN: ₦${Number(propData.priceNGN || 0).toLocaleString()}
+- Price USD: $${Number(propData.priceUSD || 0).toLocaleString()} USD
+- Land Size: ${propData.landSize || 'N/A'}
+- Legal Title: ${propData.titleStatus || 'Certificate of Occupancy (C of O)'} (${propData.titleAgency || 'AGIS Verified'})
+
+${liveScrapedContext ? `Real-Time Market Search Context (via Oxylabs):\n${liveScrapedContext}` : ''}
+
+Instructions:
+- Provide specific projected capital appreciation (%) and net annual rental yield (%).
+- Highlight legal tenure security (AGIS / C of O) and high diaspora tenant demand.
+- Keep it concise, authoritative, and focused on capital growth and rental yield. Do not include markdown code blocks.`;
+
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+    const geminiRes = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 250
+        }
+      })
+    });
+
+    if (!geminiRes.ok) {
+      return { statusCode: 500, headers, body: JSON.stringify({ error: `Gemini API error` }) };
+    }
+
+    const geminiData = await geminiRes.json();
+    const thesis = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        thesis: thesis,
+        source: liveScrapedContext 
+          ? 'Google Gemini AI & Oxylabs Web Scraper (Netlify Serverless)' 
+          : 'Google Gemini AI (Netlify Serverless)'
+      })
+    };
+
+  } catch (err) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: err.message || 'Internal Server Error' })
+    };
+  }
+};
