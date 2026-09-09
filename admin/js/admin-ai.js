@@ -1,0 +1,125 @@
+/**
+ * NOVACREST HOMES LIMITED — Real-Time AI & Web Scraper Controller
+ * Oxylabs Free Tier + Google Gemini API (Free Tier) Integration
+ */
+
+const GEMINI_KEY_STORAGE = 'novacrest_gemini_api_key';
+const OXYLABS_USER_STORAGE = 'novacrest_oxylabs_user';
+const OXYLABS_PASS_STORAGE = 'novacrest_oxylabs_pass';
+
+export function getAiCredentials() {
+  return {
+    geminiKey: localStorage.getItem(GEMINI_KEY_STORAGE) || '',
+    oxylabsUser: localStorage.getItem(OXYLABS_USER_STORAGE) || '',
+    oxylabsPass: localStorage.getItem(OXYLABS_PASS_STORAGE) || ''
+  };
+}
+
+export function saveAiCredentials(geminiKey, oxylabsUser, oxylabsPass) {
+  if (geminiKey !== undefined) localStorage.setItem(GEMINI_KEY_STORAGE, geminiKey.trim());
+  if (oxylabsUser !== undefined) localStorage.setItem(OXYLABS_USER_STORAGE, oxylabsUser.trim());
+  if (oxylabsPass !== undefined) localStorage.setItem(OXYLABS_PASS_STORAGE, oxylabsPass.trim());
+}
+
+/**
+ * Fetch live market data via Oxylabs Web Scraper API (Free Tier / Proxy)
+ */
+export async function fetchOxylabsMarketData(district, typology) {
+  const { oxylabsUser, oxylabsPass } = getAiCredentials();
+
+  if (!oxylabsUser || !oxylabsPass) {
+    console.log('[Oxylabs] No credentials configured. Skipping live web scrape.');
+    return null;
+  }
+
+  try {
+    const query = `Abuja ${district} ${typology} real estate land price per sqm 2026`;
+    const payload = {
+      source: 'google_search',
+      domain: 'com',
+      query: query,
+      start_page: 1,
+      pages: 1
+    };
+
+    const response = await fetch('https://realtime.oxylabs.io/v1/queries', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(`${oxylabsUser}:${oxylabsPass}`)
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      console.warn('[Oxylabs API Error]', response.statusText);
+      return null;
+    }
+
+    const data = await response.json();
+    const organicResults = data?.results?.[0]?.content?.results?.organic || [];
+    
+    const snippets = organicResults.slice(0, 3).map(r => `${r.title}: ${r.snippet}`).join('\n');
+    return snippets || null;
+  } catch (e) {
+    console.warn('[Oxylabs Exception]', e);
+    return null;
+  }
+}
+
+/**
+ * Generate Real-Time Investment Thesis via Google Gemini API (Free Tier: 1,500 calls/day)
+ */
+export async function generateLiveGeminiThesis(propData, liveScrapedContext = null) {
+  const { geminiKey } = getAiCredentials();
+
+  if (!geminiKey) {
+    return null; // Signals fallback to local benchmark engine
+  }
+
+  const prompt = `You are the Chief Real Estate Investment Strategist for Novacrest Homes Limited in Abuja, Nigeria.
+Analyze the following development and write a compelling, 2-3 sentence executive Investment Thesis and Capital Return Analysis for diaspora and institutional investors.
+
+Property Specifications:
+- Name: ${propData.name}
+- District: ${propData.district}, Abuja
+- Typology: ${propData.type}
+- Price NGN: ₦${Number(propData.priceNGN || 0).toLocaleString()}
+- Price USD: $${Number(propData.priceUSD || 0).toLocaleString()} USD
+- Land Size: ${propData.landSize || 'N/A'}
+- Legal Title: ${propData.titleStatus || 'Certificate of Occupancy (C of O)'} (${propData.titleAgency || 'AGIS Verified'})
+
+${liveScrapedContext ? `Real-Time Market Search Context (via Oxylabs):\n${liveScrapedContext}` : ''}
+
+Instructions:
+- Provide specific projected capital appreciation (%) and net annual rental yield (%).
+- Highlight legal tenure security (AGIS / C of O) and high diaspora tenant demand.
+- Keep it concise, authoritative, and focused on capital growth and rental yield. Do not include markdown code blocks.`;
+
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 250
+        }
+      })
+    });
+
+    if (!response.ok) {
+      console.warn('[Gemini API Error]', response.statusText);
+      return null;
+    }
+
+    const json = await response.json();
+    const outputText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return outputText ? outputText.trim() : null;
+  } catch (e) {
+    console.warn('[Gemini Exception]', e);
+    return null;
+  }
+}

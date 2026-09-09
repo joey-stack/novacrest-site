@@ -76,6 +76,9 @@
       </div>
 
       <div class="topbar-right">
+        <button type="button" class="btn-admin btn-admin-gold btn-admin-sm" id="btnOpenAiSettings">
+          <span>⚙️ AI & Data Credentials</span>
+        </button>
         <a href="../index.html" target="_blank" class="btn-admin btn-admin-secondary btn-admin-sm">
           <span>Live Website</span>
           <span>↗</span>
@@ -537,6 +540,46 @@
           <button type="button" class="btn-admin btn-admin-secondary" id="cancelArticleModalBtn">Cancel</button>
           <button type="submit" class="btn-admin btn-admin-primary">
             <span>Save & Publish Article</span>
+          </button>
+        </div>
+      </form>
+  <!-- ======================================================================
+       MODAL: AI & OXYLABS API SETTINGS
+       ====================================================================== -->
+  <div class="admin-modal-backdrop" id="aiSettingsModal">
+    <div class="admin-modal-dialog" style="max-width: 520px;">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title">Real-Time AI & Web Scraper Credentials</h3>
+        <button type="button" class="modal-close-btn" id="closeAiSettingsModalBtn">&times;</button>
+      </div>
+      <form id="aiSettingsForm">
+        <div class="admin-modal-body">
+          <p style="font-size: 12.5px; color: var(--admin-text-muted); margin-bottom: 20px; line-height: 1.5;">
+            Configure free-tier credentials for live web scraping and real-time AI market analysis. Credentials are saved locally in your browser session.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="settingGeminiKey">Google Gemini API Key (Free Tier)</label>
+            <input type="password" id="settingGeminiKey" class="form-control" placeholder="AIzaSy... (1,500 free requests/day)">
+            <div class="form-hint">Get a free key from <a href="https://aistudio.google.com/" target="_blank" style="color: var(--admin-gold);">Google AI Studio</a>.</div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="settingOxylabsUser">Oxylabs Username (Free Tier)</label>
+              <input type="text" id="settingOxylabsUser" class="form-control" placeholder="Oxylabs Username">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settingOxylabsPass">Oxylabs Password</label>
+              <input type="password" id="settingOxylabsPass" class="form-control" placeholder="Oxylabs Password">
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn-admin btn-admin-secondary" id="cancelAiSettingsModalBtn">Cancel</button>
+          <button type="submit" class="btn-admin btn-admin-primary">
+            <span>Save Credentials</span>
           </button>
         </div>
       </form>
