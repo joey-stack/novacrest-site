@@ -191,7 +191,8 @@
            TAB 3: DEVELOPMENTS CATALOG
            ================================================================== -->
       <section class="admin-tab-panel" id="tab-properties">
-        <div class="content-card">
+        <!-- View 1: Developments List Table View -->
+        <div class="content-card" id="propertiesListView">
           <div class="content-card-header">
             <h2 class="content-card-title">Signature Developments & Land Assets</h2>
             <div class="card-actions-row">
@@ -218,6 +219,146 @@
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- View 2: Inline Property Editor View -->
+        <div class="content-card" id="propertiesEditorView" style="display: none;">
+          <div class="content-card-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnBackToProperties">
+                <span>← Back to Catalog</span>
+              </button>
+              <h2 class="content-card-title" id="inlinePropTitleText" style="margin-bottom: 0;">Add New Development Listing</h2>
+            </div>
+          </div>
+
+          <form id="propertyEditorForm" style="padding: 24px;">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropName">Development Name *</label>
+                <input type="text" id="modalPropName" class="form-control" placeholder="e.g., Nova Crest Ridge" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropDistrict">Abuja District *</label>
+                <input type="text" id="modalPropDistrict" class="form-control" placeholder="e.g., Maitama, Guzape, Karshi" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropSubtitle">Tagline / Subtitle</label>
+              <input type="text" id="modalPropSubtitle" class="form-control" placeholder="e.g., Luxury Hillside Terraces with Panoramic FCT Views">
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropPriceNGN">Price (NGN) *</label>
+                <input type="number" id="modalPropPriceNGN" class="form-control" placeholder="e.g., 450000000" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropPriceUSD">Price (USD) *</label>
+                <input type="number" id="modalPropPriceUSD" class="form-control" placeholder="e.g., 300000" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropStatus">Status</label>
+                <select id="modalPropStatus" class="form-control">
+                  <option value="Available">Available</option>
+                  <option value="Selling Fast">Selling Fast</option>
+                  <option value="Under Construction">Under Construction</option>
+                  <option value="Sold Out">Sold Out</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropType">Typology</label>
+                <select id="modalPropType" class="form-control">
+                  <option value="Mansion">Mansion</option>
+                  <option value="Duplex">Duplex / Villa</option>
+                  <option value="Terrace">Terrace House</option>
+                  <option value="Land Plots">Residential Land Plots</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropTitleStatus">Legal Title Document</label>
+                <input type="text" id="modalPropTitleStatus" class="form-control" placeholder="e.g., Certificate of Occupancy (C of O)">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropTitleAgency">Verification Agency</label>
+                <input type="text" id="modalPropTitleAgency" class="form-control" placeholder="e.g., FCDA / AGIS Verified">
+              </div>
+            </div>
+
+            <div class="form-grid-4">
+              <div class="form-group">
+                <label class="form-label" for="modalPropBeds">Bedrooms</label>
+                <input type="number" id="modalPropBeds" class="form-control" placeholder="5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropBaths">Bathrooms</label>
+                <input type="number" id="modalPropBaths" class="form-control" placeholder="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropCarParks">Car Parks</label>
+                <input type="number" id="modalPropCarParks" class="form-control" placeholder="4">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropLandSize">Land / Built Size</label>
+                <input type="text" id="modalPropLandSize" class="form-control" placeholder="e.g., 850 sqm">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropImage">Main Cover Image Path</label>
+                <input type="text" id="modalPropImage" class="form-control" placeholder="assets/images/nova-crest-palace.jpg">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropGallery">Gallery Images (comma separated)</label>
+                <input type="text" id="modalPropGallery" class="form-control" placeholder="assets/images/nova-crest-palace.jpg, assets/images/your-home-interior.jpg">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropAmenities">Featured Amenities (comma separated)</label>
+              <textarea id="modalPropAmenities" class="form-control" rows="2" placeholder="Private Heated Infinity Pool, Smart Home Automation, Hybrid Solar System, Safe Room"></textarea>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="modalPropProxAirport">Airport Access</label>
+                <input type="text" id="modalPropProxAirport" class="form-control" placeholder="e.g., 28 mins via Airport Rd">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropProxCBD">CBD Distance</label>
+                <input type="text" id="modalPropProxCBD" class="form-control" placeholder="e.g., 8 mins (Central Business District)">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropProxLandmark">Key Landmark</label>
+                <input type="text" id="modalPropProxLandmark" class="form-control" placeholder="e.g., 5 mins to Transcorp Hilton">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropDesc">Property Description</label>
+              <textarea id="modalPropDesc" class="form-control" rows="3" placeholder="Architectural and location summary..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropThesis">Investment Thesis & Capital Return Analysis</label>
+              <textarea id="modalPropThesis" class="form-control" rows="2" placeholder="Strategic investment overview, projected yields, and capital appreciation forecast..."></textarea>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--admin-border);">
+              <button type="button" class="btn-admin btn-admin-secondary" id="cancelPropertyModalBtn">Cancel</button>
+              <button type="submit" class="btn-admin btn-admin-primary">
+                <span>Save Property Listing</span>
+              </button>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -391,147 +532,6 @@
           <button type="button" class="btn-admin btn-admin-secondary" id="cancelArticleModalBtn">Cancel</button>
           <button type="submit" class="btn-admin btn-admin-primary">
             <span>Save & Publish Article</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ======================================================================
-       MODAL 2: PROPERTY EDITOR MODAL
-       ====================================================================== -->
-  <div class="admin-modal-backdrop" id="propertyEditorModal">
-    <div class="admin-modal-dialog">
-      <div class="admin-modal-header">
-        <h3 class="admin-modal-title" id="modalPropTitleText">Add New Development Listing</h3>
-        <button type="button" class="modal-close-btn" id="closePropertyModalBtn">&times;</button>
-      </div>
-      <form id="propertyEditorForm">
-        <div class="admin-modal-body">
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropName">Development Name *</label>
-              <input type="text" id="modalPropName" class="form-control" placeholder="e.g., Nova Crest Ridge" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropDistrict">Abuja District *</label>
-              <input type="text" id="modalPropDistrict" class="form-control" placeholder="e.g., Maitama, Guzape, Karshi" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="modalPropSubtitle">Tagline / Subtitle</label>
-            <input type="text" id="modalPropSubtitle" class="form-control" placeholder="e.g., Luxury Hillside Terraces with Panoramic FCT Views">
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropPriceNGN">Price (NGN) *</label>
-              <input type="number" id="modalPropPriceNGN" class="form-control" placeholder="e.g., 450000000" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropPriceUSD">Price (USD) *</label>
-              <input type="number" id="modalPropPriceUSD" class="form-control" placeholder="e.g., 300000" required>
-            </div>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropStatus">Status</label>
-              <select id="modalPropStatus" class="form-control">
-                <option value="Available">Available</option>
-                <option value="Selling Fast">Selling Fast</option>
-                <option value="Under Construction">Under Construction</option>
-                <option value="Sold Out">Sold Out</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropType">Typology</label>
-              <select id="modalPropType" class="form-control">
-                <option value="Mansion">Mansion</option>
-                <option value="Duplex">Duplex / Villa</option>
-                <option value="Terrace">Terrace House</option>
-                <option value="Land Plots">Residential Land Plots</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropTitleStatus">Legal Title Document</label>
-              <input type="text" id="modalPropTitleStatus" class="form-control" placeholder="e.g., Certificate of Occupancy (C of O)">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropTitleAgency">Verification Agency</label>
-              <input type="text" id="modalPropTitleAgency" class="form-control" placeholder="e.g., FCDA / AGIS Verified">
-            </div>
-          </div>
-
-          <div class="form-grid-4">
-            <div class="form-group">
-              <label class="form-label" for="modalPropBeds">Bedrooms</label>
-              <input type="number" id="modalPropBeds" class="form-control" placeholder="5">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropBaths">Bathrooms</label>
-              <input type="number" id="modalPropBaths" class="form-control" placeholder="6">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropCarParks">Car Parks</label>
-              <input type="number" id="modalPropCarParks" class="form-control" placeholder="4">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropLandSize">Land / Built Size</label>
-              <input type="text" id="modalPropLandSize" class="form-control" placeholder="e.g., 850 sqm">
-            </div>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropImage">Main Cover Image Path</label>
-              <input type="text" id="modalPropImage" class="form-control" placeholder="assets/images/nova-crest-palace.jpg">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropGallery">Gallery Images (comma separated)</label>
-              <input type="text" id="modalPropGallery" class="form-control" placeholder="assets/images/nova-crest-palace.jpg, assets/images/your-home-interior.jpg">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="modalPropAmenities">Featured Amenities (comma separated)</label>
-            <textarea id="modalPropAmenities" class="form-control" rows="2" placeholder="Private Heated Infinity Pool, Smart Home Automation, Hybrid Solar System, Safe Room"></textarea>
-          </div>
-
-          <div class="form-grid-3">
-            <div class="form-group">
-              <label class="form-label" for="modalPropProxAirport">Airport Access</label>
-              <input type="text" id="modalPropProxAirport" class="form-control" placeholder="e.g., 28 mins via Airport Rd">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropProxCBD">CBD Distance</label>
-              <input type="text" id="modalPropProxCBD" class="form-control" placeholder="e.g., 8 mins (Central Business District)">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropProxLandmark">Key Landmark</label>
-              <input type="text" id="modalPropProxLandmark" class="form-control" placeholder="e.g., 5 mins to Transcorp Hilton">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="modalPropDesc">Property Description</label>
-            <textarea id="modalPropDesc" class="form-control" rows="3" placeholder="Architectural and location summary..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="modalPropThesis">Investment Thesis & Capital Return Analysis</label>
-            <textarea id="modalPropThesis" class="form-control" rows="2" placeholder="Strategic investment overview, projected yields, and capital appreciation forecast..."></textarea>
-          </div>
-        </div>
-
-        <div class="admin-modal-footer">
-          <button type="button" class="btn-admin btn-admin-secondary" id="cancelPropertyModalBtn">Cancel</button>
-          <button type="submit" class="btn-admin btn-admin-primary">
-            <span>Save Property</span>
           </button>
         </div>
       </form>

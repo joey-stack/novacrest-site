@@ -504,24 +504,43 @@ function generateSlug(text) {
 /* ==========================================================================
    Property Management
    ========================================================================== */
+function showPropertyEditorView(modeTitle) {
+  const listView = document.getElementById('propertiesListView');
+  const editorView = document.getElementById('propertiesEditorView');
+  const titleEl = document.getElementById('inlinePropTitleText');
+
+  if (titleEl) titleEl.textContent = modeTitle;
+  if (listView) listView.style.display = 'none';
+  if (editorView) {
+    editorView.style.display = 'block';
+    editorView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function showPropertiesListView() {
+  const listView = document.getElementById('propertiesListView');
+  const editorView = document.getElementById('propertiesEditorView');
+
+  if (editorView) editorView.style.display = 'none';
+  if (listView) {
+    listView.style.display = 'block';
+  }
+}
+
 function initPropertiesManager() {
   const newBtn = document.getElementById('btnNewProperty');
-  const modal = document.getElementById('propertyEditorModal');
-  const closeModalBtn = document.getElementById('closePropertyModalBtn');
-  const cancelModalBtn = document.getElementById('cancelPropertyModalBtn');
+  const backBtn = document.getElementById('btnBackToProperties');
+  const cancelBtn = document.getElementById('cancelPropertyModalBtn');
   const form = document.getElementById('propertyEditorForm');
 
-  if (newBtn && modal) {
+  if (newBtn) {
     newBtn.addEventListener('click', () => {
       openPropertyModalForCreate();
     });
   }
 
-  const closeHandler = () => {
-    if (modal) modal.classList.remove('active');
-  };
-  if (closeModalBtn) closeModalBtn.addEventListener('click', closeHandler);
-  if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeHandler);
+  if (backBtn) backBtn.addEventListener('click', showPropertiesListView);
+  if (cancelBtn) cancelBtn.addEventListener('click', showPropertiesListView);
 
   if (form) {
     form.addEventListener('submit', (e) => {
@@ -598,14 +617,12 @@ function renderPropertiesTable() {
 }
 
 function openPropertyModalForCreate() {
-  const modal = document.getElementById('propertyEditorModal');
   const form = document.getElementById('propertyEditorForm');
-  const titleEl = document.getElementById('modalPropTitleText');
-
-  form.reset();
+  if (form) form.reset();
   form.setAttribute('data-mode', 'create');
   form.removeAttribute('data-edit-id');
-  if (titleEl) titleEl.textContent = 'Add New Development Listing';
+
+  showPropertyEditorView('Add New Development Listing');
 
   const setVal = (id, val) => {
     const el = document.getElementById(id);
@@ -624,14 +641,10 @@ function openPropertyModalForCreate() {
   setVal('modalPropProxAirport', '28 mins (via Airport Rd Expressway)');
   setVal('modalPropProxCBD', '8 mins (Central Business District)');
   setVal('modalPropProxLandmark', '5 mins to Transcorp Hilton');
-
-  modal.classList.add('active');
 }
 
 function openPropertyModalForEdit(id) {
-  const modal = document.getElementById('propertyEditorModal');
   const form = document.getElementById('propertyEditorForm');
-  const titleEl = document.getElementById('modalPropTitleText');
   const props = getProperties();
   const prop = props.find(p => p.id === id);
 
@@ -639,7 +652,8 @@ function openPropertyModalForEdit(id) {
 
   form.setAttribute('data-mode', 'edit');
   form.setAttribute('data-edit-id', prop.id);
-  if (titleEl) titleEl.textContent = `Edit Property: ${prop.name}`;
+
+  showPropertyEditorView(`Edit Property: ${prop.name}`);
 
   const setVal = (id, val) => {
     const el = document.getElementById(id);
@@ -667,8 +681,6 @@ function openPropertyModalForEdit(id) {
   setVal('modalPropProxLandmark', prop.proximity?.landmark || '');
   setVal('modalPropDesc', prop.description);
   setVal('modalPropThesis', prop.investmentThesis);
-
-  modal.classList.add('active');
 }
 
 function savePropertyFromModal() {
@@ -746,7 +758,7 @@ function savePropertyFromModal() {
 
   saveProperty(propPayload);
 
-  document.getElementById('propertyEditorModal').classList.remove('active');
+  showPropertiesListView();
   renderPropertiesTable();
   initKPIs();
   showToast(mode === 'edit' ? 'Property details updated!' : 'New property added to catalog!', 'success');
