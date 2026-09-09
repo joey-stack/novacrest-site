@@ -3,9 +3,13 @@
  * Orchestrates navigation, modals, currency, and interactions
  */
 
+import { inject } from '@vercel/analytics';
 import { PROPERTIES, ABUJA_DISTRICTS, BLOG_POSTS, TESTIMONIALS } from './properties-data.js';
 import { getCurrency, setCurrency, getDualPriceTag } from './currency.js';
 import { initFilterEngine } from './filter.js';
+
+// Initialize Vercel Web Analytics
+inject();
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
