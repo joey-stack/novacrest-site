@@ -205,6 +205,30 @@ function switchArticleView(view) {
   }
 }
 
+function initWysiwygToolbar() {
+  const toolbar = document.getElementById('wysiwygToolbar');
+  const editor = document.getElementById('inlineArticleWysiwyg');
+  if (!toolbar || !editor) return;
+
+  toolbar.querySelectorAll('.wysiwyg-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const cmd = btn.getAttribute('data-cmd');
+      const val = btn.getAttribute('data-val') || null;
+
+      if (cmd === 'createLink') {
+        const url = prompt('Enter URL link (e.g. https://novacresthomes.com):');
+        if (url) document.execCommand('createLink', false, url);
+      } else if (cmd === 'formatBlock' && val) {
+        document.execCommand('formatBlock', false, `<${val}>`);
+      } else if (cmd) {
+        document.execCommand(cmd, false, val);
+      }
+      editor.focus();
+    });
+  });
+}
+
 function initArticlesManager() {
   const searchInput = document.getElementById('articleSearchInput');
   const categorySelect = document.getElementById('articleCategorySelect');
@@ -214,6 +238,8 @@ function initArticlesManager() {
   const cancelBtn1 = document.getElementById('btnCancelArticleEditor');
   const cancelBtn2 = document.getElementById('btnCancelArticleEditorSecondary');
   const cancelBtn3 = document.getElementById('btnCancelArticleEditorFooter');
+
+  initWysiwygToolbar();
 
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -293,11 +319,14 @@ function openInlineArticleEditorForCreate() {
   document.getElementById('inlineArticleReadTime').value = '6 min read';
   document.getElementById('inlineArticleDate').value = 'September 2026';
 
-  document.getElementById('inlineArticleSec1Heading').value = '1. The FCT Legal Framework: FCDA & AGIS Authority';
-  document.getElementById('inlineArticleSec1Content').value = '<p>Unlike other Nigerian states where land tenure is governed primarily through state land registries, the Federal Capital Territory (FCT) is governed strictly under the Land Use Act of 1978 and the FCT Act.</p>';
+  const defaultWysiwygHtml = `
+    <h2>1. The FCT Legal Framework: FCDA & AGIS Authority</h2>
+    <p>Unlike other Nigerian states where land tenure is governed primarily through state land registries under customary law, the Federal Capital Territory (FCT) is governed strictly under the <strong>Land Use Act of 1978</strong> and the <strong>FCT Act</strong>.</p>
+    <h2>2. Certificate of Occupancy (C of O): The Gold Standard</h2>
+    <p>The Certificate of Occupancy is the highest statutory land document issued in Nigeria. In Abuja, a genuine C of O bears the direct signature of the Minister of the FCT.</p>
+  `.trim();
 
-  document.getElementById('inlineArticleSec2Heading').value = '2. Certificate of Occupancy (C of O): The Gold Standard';
-  document.getElementById('inlineArticleSec2Content').value = '<p>The Certificate of Occupancy is the highest statutory land document issued in Nigeria. In Abuja, a genuine C of O bears the direct signature of the Minister of the FCT.</p>';
+  document.getElementById('inlineArticleWysiwyg').innerHTML = defaultWysiwygHtml;
 
   switchArticleView('editor');
 }
@@ -333,16 +362,19 @@ function openInlineArticleEditorForEdit(id) {
   document.getElementById('inlineArticleSnippet').value = post.snippet || '';
   document.getElementById('inlineArticleKeyTakeaway').value = post.keyTakeaway || '';
 
-  // Sections
-  const secs = post.sections || [];
-  document.getElementById('inlineArticleSec1Heading').value = secs[0]?.heading || '';
-  document.getElementById('inlineArticleSec1Content').value = secs[0]?.content || '';
+  // Populate WYSIWYG Content
+  let wysiwygHtml = '';
+  if (post.sections && Array.isArray(post.sections) && post.sections.length > 0) {
+    wysiwygHtml = post.sections.map(s => {
+      const h = s.heading ? `<h2>${s.heading}</h2>` : '';
+      const c = s.content || '';
+      return `${h}${c}`;
+    }).join('\n');
+  } else if (post.content) {
+    wysiwygHtml = post.content;
+  }
 
-  document.getElementById('inlineArticleSec2Heading').value = secs[1]?.heading || '';
-  document.getElementById('inlineArticleSec2Content').value = secs[1]?.content || '';
-
-  document.getElementById('inlineArticleSec3Heading').value = secs[2]?.heading || '';
-  document.getElementById('inlineArticleSec3Content').value = secs[2]?.content || '';
+  document.getElementById('inlineArticleWysiwyg').innerHTML = wysiwygHtml;
 
   switchArticleView('editor');
 }
@@ -368,6 +400,7 @@ function saveArticleFromInlineForm() {
 
   const snippet = document.getElementById('inlineArticleSnippet').value.trim();
   const keyTakeaway = document.getElementById('inlineArticleKeyTakeaway').value.trim();
+  const wysiwygContent = document.getElementById('inlineArticleWysiwyg').innerHTML.trim();
 
   // Category Slug Mapper
   const catSlugMap = {
@@ -377,19 +410,8 @@ function saveArticleFromInlineForm() {
     'Infrastructure & Development': 'infrastructure'
   };
 
-  // Build Sections Array
-  const sections = [];
-  const sec1H = document.getElementById('inlineArticleSec1Heading').value.trim();
-  const sec1C = document.getElementById('inlineArticleSec1Content').value.trim();
-  if (sec1H || sec1C) sections.push({ heading: sec1H, content: sec1C });
-
-  const sec2H = document.getElementById('inlineArticleSec2Heading').value.trim();
-  const sec2C = document.getElementById('inlineArticleSec2Content').value.trim();
-  if (sec2H || sec2C) sections.push({ heading: sec2H, content: sec2C });
-
-  const sec3H = document.getElementById('inlineArticleSec3Heading').value.trim();
-  const sec3C = document.getElementById('inlineArticleSec3Content').value.trim();
-  if (sec3H || sec3C) sections.push({ heading: sec3H, content: sec3C });
+  // Convert WYSIWYG HTML into structured sections for frontend renderer compatibility
+  const sections = parseWysiwygHtmlToSections(wysiwygContent);
 
   const postPayload = {
     id: (mode === 'edit' && rawId) ? rawId : slug,
@@ -411,7 +433,8 @@ function saveArticleFromInlineForm() {
     keyTakeaway,
     featured,
     relatedPropertyId: relatedPropertyId || null,
-    sections
+    sections,
+    content: wysiwygContent
   };
 
   saveBlogPost(postPayload);
@@ -420,6 +443,38 @@ function saveArticleFromInlineForm() {
   renderArticlesTable();
   initKPIs();
   showToast(mode === 'edit' ? 'Article updated and synced to Firestore' : 'Article created and published', 'success');
+}
+
+function parseWysiwygHtmlToSections(html) {
+  if (!html) return [];
+
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+
+  const sections = [];
+  let currentSection = { heading: '', content: '' };
+
+  Array.from(temp.childNodes).forEach(node => {
+    const isHeading = node.nodeType === 1 && (node.tagName === 'H2' || node.tagName === 'H3' || node.tagName === 'H4');
+    
+    if (isHeading) {
+      if (currentSection.heading || currentSection.content) {
+        sections.push({ ...currentSection });
+      }
+      currentSection = { heading: node.textContent.trim(), content: '' };
+    } else {
+      const htmlStr = node.nodeType === 1 ? node.outerHTML : `<p>${node.textContent}</p>`;
+      if (htmlStr.trim()) {
+        currentSection.content += htmlStr;
+      }
+    }
+  });
+
+  if (currentSection.heading || currentSection.content) {
+    sections.push(currentSection);
+  }
+
+  return sections;
 }
 
 function renderArticlesTable() {

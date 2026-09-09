@@ -245,47 +245,34 @@
                   <textarea id="inlineArticleKeyTakeaway" class="form-control" rows="2" placeholder="e.g. Never execute a real estate transaction in the FCT based solely on an offer letter..."></textarea>
                 </div>
 
-                <!-- 5. Body Content & Sections -->
-                <div class="cms-sections-wrapper">
-                  <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Article Body Content & Sections</h4>
+                <!-- 5. WYSIWYG Article Body Content Editor -->
+                <div class="cms-sections-wrapper" style="margin-bottom: 24px;">
+                  <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">
+                    📝 Article Body Content (WYSIWYG Rich Text Editor)
+                  </h4>
 
-                  <!-- Section 1 -->
-                  <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 18px;">
-                    <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-gold); margin-bottom: 12px;">Section 1</h5>
-                    <div class="form-group">
-                      <label class="form-label">Section 1 Heading</label>
-                      <input type="text" id="inlineArticleSec1Heading" class="form-control" placeholder="1. The FCT Legal Framework: FCDA & AGIS Authority">
+                  <div class="wysiwyg-wrapper">
+                    <!-- WYSIWYG Formatting Toolbar -->
+                    <div class="wysiwyg-toolbar" id="wysiwygToolbar">
+                      <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                      <span style="width: 1px; height: 20px; background: var(--admin-border); margin: 0 4px;"></span>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="h2" title="Heading 2">H2</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="h3" title="Heading 3">H3</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="p" title="Paragraph">P</button>
+                      <span style="width: 1px; height: 20px; background: var(--admin-border); margin: 0 4px;"></span>
+                      <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Bullet List">• Bullet List</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Numbered List">1. Numbered List</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="blockquote" title="Quote Banner">“ Blockquote</button>
+                      <span style="width: 1px; height: 20px; background: var(--admin-border); margin: 0 4px;"></span>
+                      <button type="button" class="wysiwyg-btn" data-cmd="createLink" title="Add URL Link">🔗 Add Link</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="unlink" title="Remove Link">Unlink</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Clear Formatting">🧹 Clear Format</button>
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <label class="form-label">Section 1 Paragraph Content (HTML / Rich Text)</label>
-                      <textarea id="inlineArticleSec1Content" class="form-control" rows="5" placeholder="Write or paste paragraph content for Section 1..."></textarea>
-                    </div>
-                  </div>
 
-                  <!-- Section 2 -->
-                  <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 18px;">
-                    <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-gold); margin-bottom: 12px;">Section 2</h5>
-                    <div class="form-group">
-                      <label class="form-label">Section 2 Heading</label>
-                      <input type="text" id="inlineArticleSec2Heading" class="form-control" placeholder="2. Certificate of Occupancy (C of O): The Gold Standard">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <label class="form-label">Section 2 Paragraph Content (HTML / Rich Text)</label>
-                      <textarea id="inlineArticleSec2Content" class="form-control" rows="5" placeholder="Write or paste paragraph content for Section 2..."></textarea>
-                    </div>
-                  </div>
-
-                  <!-- Section 3 -->
-                  <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px;">
-                    <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-gold); margin-bottom: 12px;">Section 3</h5>
-                    <div class="form-group">
-                      <label class="form-label">Section 3 Heading</label>
-                      <input type="text" id="inlineArticleSec3Heading" class="form-control" placeholder="3. Right of Occupancy (R of O) & AGIS Verification">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <label class="form-label">Section 3 Paragraph Content (HTML / Rich Text)</label>
-                      <textarea id="inlineArticleSec3Content" class="form-control" rows="5" placeholder="Write or paste paragraph content for Section 3..."></textarea>
-                    </div>
+                    <!-- WYSIWYG Editable Visual Body -->
+                    <div class="wysiwyg-editor" id="inlineArticleWysiwyg" contenteditable="true" placeholder="Type or paste your article body text here..."></div>
                   </div>
                 </div>
               </div>

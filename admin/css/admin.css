@@ -933,3 +933,93 @@ body.sidebar-collapsed .sidebar-collapse-btn svg {
   }
 }
 
+/* ==========================================================================
+   WYSIWYG Rich Text Editor Studio Styling
+   ========================================================================== */
+.wysiwyg-wrapper {
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.wysiwyg-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.wysiwyg-btn {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text-main);
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.wysiwyg-btn:hover {
+  background: rgba(201, 157, 66, 0.15);
+  border-color: var(--admin-gold);
+  color: var(--admin-gold);
+}
+
+.wysiwyg-editor {
+  min-height: 340px;
+  padding: 20px;
+  outline: none;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #e2e8f0;
+}
+
+.wysiwyg-editor[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: var(--admin-text-muted);
+}
+
+.wysiwyg-editor h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--admin-gold);
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.wysiwyg-editor h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.wysiwyg-editor p {
+  margin-bottom: 14px;
+}
+
+.wysiwyg-editor blockquote {
+  border-left: 3px solid var(--admin-gold);
+  padding-left: 14px;
+  margin: 16px 0;
+  color: var(--admin-text-muted);
+  font-style: italic;
+}
+
+.wysiwyg-editor ul, .wysiwyg-editor ol {
+  padding-left: 24px;
+  margin-bottom: 14px;
+}
+
+
