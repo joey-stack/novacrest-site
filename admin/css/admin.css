@@ -926,3 +926,10 @@ body.sidebar-collapsed .sidebar-collapse-btn svg {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 992px) {
+  .cms-editor-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+

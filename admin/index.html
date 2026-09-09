@@ -193,21 +193,21 @@
           </div>
         </div>
 
-        <!-- View 2: Inline Article Editor View -->
+        <!-- View 2: Inline Article Editor View (WordPress CMS Studio Style) -->
         <div class="content-card" id="articlesEditorView" style="display: none; padding: 0;">
           <div class="content-card-header" style="border-bottom: 1px solid var(--admin-border); padding: 20px 24px; background: rgba(255,255,255,0.02);">
             <div style="display: flex; align-items: center; gap: 14px;">
               <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnCancelArticleEditor">
                 <span>← Back to Articles</span>
               </button>
-              <h2 class="content-card-title" id="articleEditorViewTitle" style="margin: 0;">Edit Article</h2>
+              <h2 class="content-card-title" id="articleEditorViewTitle" style="margin: 0;">WordPress-Style Article Studio</h2>
             </div>
             <div class="card-actions-row">
               <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnCancelArticleEditorSecondary">
                 <span>Cancel</span>
               </button>
               <button type="submit" form="inlineArticleForm" class="btn-admin btn-admin-primary">
-                <span>💾 Save & Publish Article</span>
+                <span>💾 Publish Article</span>
               </button>
             </div>
           </div>
@@ -215,151 +215,177 @@
           <form id="inlineArticleForm" style="padding: 24px;">
             <input type="hidden" id="inlineArticleId">
 
-            <!-- Section 1: Core Article Metadata -->
-            <div style="margin-bottom: 24px;">
-              <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">1. Article Specifications & Publishing</h4>
-              
-              <div class="form-grid-2">
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleTitle">Article Headline Title *</label>
-                  <input type="text" id="inlineArticleTitle" class="form-control" placeholder="e.g. Land Title Types in Abuja Explained" required>
+            <!-- 2-Column WordPress CMS Studio Grid -->
+            <div class="cms-editor-grid" style="display: grid; grid-template-columns: 1fr 340px; gap: 24px;">
+
+              <!-- LEFT MAIN COLUMN: Title, Content & Body Sections (70%) -->
+              <div class="cms-main-content">
+                
+                <!-- 1. Post Title Input -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label" style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase;">Article Headline Title *</label>
+                  <input type="text" id="inlineArticleTitle" class="form-control" style="font-size: 20px; font-weight: 700; padding: 14px 16px;" placeholder="Add title..." required>
                 </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSlug">URL Slug *</label>
-                  <input type="text" id="inlineArticleSlug" class="form-control" placeholder="e.g. land-title-types-abuja" required>
+
+                <!-- 2. Subtitle / Tagline -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label">Subtitle / Legal Primer Tagline</label>
+                  <input type="text" id="inlineArticleSubtitle" class="form-control" placeholder="A definitive legal primer to protect diaspora capital before issuing bank transfers...">
+                </div>
+
+                <!-- 3. Excerpt / Snippet -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label">Excerpt / Card Summary</label>
+                  <textarea id="inlineArticleSnippet" class="form-control" rows="2" placeholder="Brief summary displayed on article cards & Google search snippets..."></textarea>
+                </div>
+
+                <!-- 4. Key Takeaway Box -->
+                <div class="form-group" style="margin-bottom: 24px; background: rgba(201, 157, 66, 0.05); border: 1px solid rgba(201, 157, 66, 0.2); border-radius: 8px; padding: 16px;">
+                  <label class="form-label" style="color: var(--admin-gold); font-weight: 600;">⭐ Key Executive Takeaway Box (Highlighted Banner)</label>
+                  <textarea id="inlineArticleKeyTakeaway" class="form-control" rows="2" placeholder="e.g. Never execute a real estate transaction in the FCT based solely on an offer letter..."></textarea>
+                </div>
+
+                <!-- 5. Body Content & Sections -->
+                <div class="cms-sections-wrapper">
+                  <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Article Body Content & Sections</h4>
+
+                  <!-- Section 1 -->
+                  <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 18px;">
+                    <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-gold); margin-bottom: 12px;">Section 1</h5>
+                    <div class="form-group">
+                      <label class="form-label">Section 1 Heading</label>
+                      <input type="text" id="inlineArticleSec1Heading" class="form-control" placeholder="1. The FCT Legal Framework: FCDA & AGIS Authority">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label">Section 1 Paragraph Content (HTML / Rich Text)</label>
+                      <textarea id="inlineArticleSec1Content" class="form-control" rows="5" placeholder="Write or paste paragraph content for Section 1..."></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Section 2 -->
+                  <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 18px;">
+                    <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-gold); margin-bottom: 12px;">Section 2</h5>
+                    <div class="form-group">
+                      <label class="form-label">Section 2 Heading</label>
+                      <input type="text" id="inlineArticleSec2Heading" class="form-control" placeholder="2. Certificate of Occupancy (C of O): The Gold Standard">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label">Section 2 Paragraph Content (HTML / Rich Text)</label>
+                      <textarea id="inlineArticleSec2Content" class="form-control" rows="5" placeholder="Write or paste paragraph content for Section 2..."></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Section 3 -->
+                  <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px;">
+                    <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-gold); margin-bottom: 12px;">Section 3</h5>
+                    <div class="form-group">
+                      <label class="form-label">Section 3 Heading</label>
+                      <input type="text" id="inlineArticleSec3Heading" class="form-control" placeholder="3. Right of Occupancy (R of O) & AGIS Verification">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label">Section 3 Paragraph Content (HTML / Rich Text)</label>
+                      <textarea id="inlineArticleSec3Content" class="form-control" rows="5" placeholder="Write or paste paragraph content for Section 3..."></textarea>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="inlineArticleSubtitle">Subtitle / Legal Primer Tagline</label>
-                <input type="text" id="inlineArticleSubtitle" class="form-control" placeholder="A definitive legal primer to protect diaspora capital...">
-              </div>
+              <!-- RIGHT SIDEBAR PANEL: Publish & Settings (30%) -->
+              <div class="cms-sidebar">
 
-              <div class="form-grid-3">
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleCategory">Category</label>
-                  <select id="inlineArticleCategory" class="form-control">
-                    <option value="Legal & Due Diligence">Legal & Due Diligence</option>
-                    <option value="Market Research">Market Research</option>
-                    <option value="Investment Strategy">Investment Strategy</option>
-                    <option value="Infrastructure & Development">Infrastructure & Development</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleReadTime">Estimated Read Time</label>
-                  <input type="text" id="inlineArticleReadTime" class="form-control" placeholder="e.g. 6 min read">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleDate">Publish Date (Display)</label>
-                  <input type="text" id="inlineArticleDate" class="form-control" placeholder="e.g. September 2026">
-                </div>
-              </div>
-            </div>
+                <!-- Card A: Publish Box -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">📌 Publish Settings</h4>
+                  
+                  <div class="form-group">
+                    <label class="form-label">URL Slug *</label>
+                    <input type="text" id="inlineArticleSlug" class="form-control" placeholder="land-title-types-abuja" required>
+                  </div>
 
-            <!-- Section 2: Author & Media Assets -->
-            <div style="margin-bottom: 24px; padding-top: 20px; border-top: 1px dashed var(--admin-border);">
-              <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">2. Author Profile & Media</h4>
-              
-              <div class="form-grid-3">
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleAuthorName">Author Full Name</label>
-                  <input type="text" id="inlineArticleAuthorName" class="form-control" placeholder="e.g. Barr. Chukwuemeka Okonkwo">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleAuthorRole">Author Role / Designation</label>
-                  <input type="text" id="inlineArticleAuthorRole" class="form-control" placeholder="e.g. Head of Legal & Conveyancing">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleAuthorAvatar">Author Avatar Image URL</label>
-                  <input type="text" id="inlineArticleAuthorAvatar" class="form-control" placeholder="assets/images/about-leadership-banner.jpg">
-                </div>
-              </div>
+                  <div class="form-group">
+                    <label class="form-label">Publish Date (Display)</label>
+                    <input type="text" id="inlineArticleDate" class="form-control" placeholder="e.g. September 2026">
+                  </div>
 
-              <div class="form-grid-2">
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleCoverImage">Cover Image Path / URL</label>
-                  <input type="text" id="inlineArticleCoverImage" class="form-control" placeholder="assets/images/masterplan-aerial.jpg">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleRelatedProperty">Featured Linked Development</label>
-                  <select id="inlineArticleRelatedProperty" class="form-control">
-                    <option value="">None (General Article)</option>
-                    <!-- Populated dynamically via JS -->
-                  </select>
-                </div>
-              </div>
+                  <div class="form-group">
+                    <label class="form-label">Estimated Read Time</label>
+                    <input type="text" id="inlineArticleReadTime" class="form-control" placeholder="e.g. 6 min read">
+                  </div>
 
-              <div class="form-group" style="margin-top: 8px;">
-                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
-                  <input type="checkbox" id="inlineArticleFeatured" style="width: 16px; height: 16px; accent-color: var(--admin-gold);">
-                  <span>🌟 Feature in Homepage & Blog Spotlight Header</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Section 3: Summaries & Executive Takeaway -->
-            <div style="margin-bottom: 24px; padding-top: 20px; border-top: 1px dashed var(--admin-border);">
-              <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">3. Executive Summary & Key Takeaway</h4>
-              
-              <div class="form-group">
-                <label class="form-label" for="inlineArticleSnippet">Short Article Excerpt (For Cards & Listings)</label>
-                <textarea id="inlineArticleSnippet" class="form-control" rows="2" placeholder="Brief summary displayed on article cards..."></textarea>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="inlineArticleKeyTakeaway">Key Executive Takeaway (Gold Highlight Box)</label>
-                <textarea id="inlineArticleKeyTakeaway" class="form-control" rows="2" placeholder="e.g. Never execute a real estate transaction in the FCT based solely on an offer letter..."></textarea>
-              </div>
-            </div>
-
-            <!-- Section 4: Detailed Article Content Sections -->
-            <div style="margin-bottom: 24px; padding-top: 20px; border-top: 1px dashed var(--admin-border);">
-              <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">4. Detailed Article Content Sections</h4>
-
-              <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-                <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-text-main); margin-bottom: 10px;">Section 1</h5>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSec1Heading">Heading Title</label>
-                  <input type="text" id="inlineArticleSec1Heading" class="form-control" placeholder="1. The FCT Legal Framework: FCDA & AGIS Authority">
+                  <button type="submit" class="btn-admin btn-admin-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+                    <span>💾 Publish Article</span>
+                  </button>
                 </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSec1Content">Content (Paragraphs / HTML allowed)</label>
-                  <textarea id="inlineArticleSec1Content" class="form-control" rows="4" placeholder="Enter paragraph content for Section 1..."></textarea>
-                </div>
-              </div>
 
-              <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-                <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-text-main); margin-bottom: 10px;">Section 2</h5>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSec2Heading">Heading Title</label>
-                  <input type="text" id="inlineArticleSec2Heading" class="form-control" placeholder="2. Certificate of Occupancy (C of O): The Gold Standard">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSec2Content">Content (Paragraphs / HTML allowed)</label>
-                  <textarea id="inlineArticleSec2Content" class="form-control" rows="4" placeholder="Enter paragraph content for Section 2..."></textarea>
-                </div>
-              </div>
+                <!-- Card B: Category & Spotlight -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">📂 Categories & Linked Estate</h4>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Primary Category</label>
+                    <select id="inlineArticleCategory" class="form-control">
+                      <option value="Legal & Due Diligence">Legal & Due Diligence</option>
+                      <option value="Market Research">Market Research</option>
+                      <option value="Investment Strategy">Investment Strategy</option>
+                      <option value="Infrastructure & Development">Infrastructure & Development</option>
+                    </select>
+                  </div>
 
-              <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--admin-border); border-radius: 6px; padding: 16px; margin-bottom: 16px;">
-                <h5 style="font-size: 13px; font-weight: 600; color: var(--admin-text-main); margin-bottom: 10px;">Section 3</h5>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSec3Heading">Heading Title</label>
-                  <input type="text" id="inlineArticleSec3Heading" class="form-control" placeholder="3. Right of Occupancy (R of O) & AGIS Verification">
+                  <div class="form-group">
+                    <label class="form-label">Featured Linked Development</label>
+                    <select id="inlineArticleRelatedProperty" class="form-control">
+                      <option value="">None (General Article)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                      <input type="checkbox" id="inlineArticleFeatured" style="width: 16px; height: 16px; accent-color: var(--admin-gold);">
+                      <span>🌟 Spotlight Featured Post</span>
+                    </label>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label class="form-label" for="inlineArticleSec3Content">Content (Paragraphs / HTML allowed)</label>
-                  <textarea id="inlineArticleSec3Content" class="form-control" rows="4" placeholder="Enter paragraph content for Section 3..."></textarea>
+
+                <!-- Card C: Featured Cover Image -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">🖼️ Featured Cover Image</h4>
+                  
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Cover Image Path / URL</label>
+                    <input type="text" id="inlineArticleCoverImage" class="form-control" placeholder="assets/images/masterplan-aerial.jpg">
+                  </div>
                 </div>
+
+                <!-- Card D: Author Profile -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">👤 Author Profile</h4>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Author Name</label>
+                    <input type="text" id="inlineArticleAuthorName" class="form-control" placeholder="e.g. Barr. Chukwuemeka Okonkwo">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Author Role / Title</label>
+                    <input type="text" id="inlineArticleAuthorRole" class="form-control" placeholder="e.g. Head of Legal & Conveyancing">
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Author Avatar URL</label>
+                    <input type="text" id="inlineArticleAuthorAvatar" class="form-control" placeholder="assets/images/about-leadership-banner.jpg">
+                  </div>
+                </div>
+
               </div>
             </div>
 
             <!-- Form Actions Footer -->
-            <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 20px; border-top: 1px solid var(--admin-border);">
+            <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 24px; margin-top: 24px; border-top: 1px solid var(--admin-border);">
               <button type="button" class="btn-admin btn-admin-secondary" id="btnCancelArticleEditorFooter">
                 <span>Cancel</span>
               </button>
               <button type="submit" class="btn-admin btn-admin-primary">
-                <span>💾 Save & Publish Article</span>
+                <span>💾 Publish Article</span>
               </button>
             </div>
           </form>
