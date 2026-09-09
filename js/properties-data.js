@@ -3,7 +3,11 @@
  * Abuja, Nigeria - Diaspora & Luxury Real Estate
  */
 
-import { db, collection, doc, getDocs, setDoc, deleteDoc } from './firebase-config.js';
+import { 
+  fetchFirestoreCollection, 
+  saveFirestoreDocument, 
+  deleteFirestoreDocument 
+} from './firebase-config.js';
 
 const DEFAULT_PROPERTIES = [
   {
@@ -591,14 +595,8 @@ export function getProperties() {
  */
 export async function fetchFirestoreProperties() {
   try {
-    if (!db) return getProperties();
-    const querySnapshot = await getDocs(collection(db, "properties"));
-    const firestoreProps = [];
-    querySnapshot.forEach((docSnap) => {
-      firestoreProps.push(docSnap.data());
-    });
-
-    if (firestoreProps.length > 0) {
+    const firestoreProps = await fetchFirestoreCollection("properties");
+    if (firestoreProps && firestoreProps.length > 0) {
       if (typeof window !== 'undefined' && window.localStorage) {
         localStorage.setItem('novacrest_properties', JSON.stringify(firestoreProps));
       }
@@ -625,11 +623,9 @@ export function saveProperty(propData) {
     localStorage.setItem('novacrest_properties', JSON.stringify(props));
   }
 
-  // Cloud Firestore Sync
-  if (db && propData.id) {
-    setDoc(doc(db, "properties", propData.id), propData, { merge: true })
-      .then(() => console.log(`[Firestore] Property '${propData.name}' saved to cloud.`))
-      .catch(err => console.error('[Firestore Error]', err));
+  // Cloud Firestore Sync (Async background)
+  if (propData.id) {
+    saveFirestoreDocument("properties", propData.id, propData);
   }
 
   return props;
@@ -644,11 +640,9 @@ export function deleteProperty(id) {
     localStorage.setItem('novacrest_properties', JSON.stringify(props));
   }
 
-  // Cloud Firestore Delete
-  if (db && id) {
-    deleteDoc(doc(db, "properties", id))
-      .then(() => console.log(`[Firestore] Property '${id}' deleted from cloud.`))
-      .catch(err => console.error('[Firestore Error]', err));
+  // Cloud Firestore Delete (Async background)
+  if (id) {
+    deleteFirestoreDocument("properties", id);
   }
 
   return props;
@@ -658,12 +652,11 @@ export function deleteProperty(id) {
  * One-Click Bulk Cloud Sync: Uploads all properties to Google Cloud Firestore
  */
 export async function syncAllPropertiesToFirestore() {
-  if (!db) throw new Error('Firestore not initialized');
   const props = getProperties();
   let count = 0;
   for (const prop of props) {
-    await setDoc(doc(db, "properties", prop.id), prop, { merge: true });
-    count++;
+    const ok = await saveFirestoreDocument("properties", prop.id, prop);
+    if (ok) count++;
   }
   return count;
 }

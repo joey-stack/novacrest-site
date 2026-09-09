@@ -3,7 +3,11 @@
  * Prepared for dynamic rendering and future CMS / Admin Dashboard syncing
  */
 
-import { db, collection, doc, getDocs, setDoc, deleteDoc } from './firebase-config.js';
+import { 
+  fetchFirestoreCollection, 
+  saveFirestoreDocument, 
+  deleteFirestoreDocument 
+} from './firebase-config.js';
 
 const DEFAULT_BLOG_POSTS = [
   {
@@ -285,14 +289,8 @@ export function getBlogPosts() {
  */
 export async function fetchFirestoreBlogPosts() {
   try {
-    if (!db) return getBlogPosts();
-    const querySnapshot = await getDocs(collection(db, "articles"));
-    const firestorePosts = [];
-    querySnapshot.forEach((docSnap) => {
-      firestorePosts.push(docSnap.data());
-    });
-
-    if (firestorePosts.length > 0) {
+    const firestorePosts = await fetchFirestoreCollection("articles");
+    if (firestorePosts && firestorePosts.length > 0) {
       if (typeof window !== 'undefined' && window.localStorage) {
         localStorage.setItem('novacrest_blog_posts', JSON.stringify(firestorePosts));
       }
@@ -319,12 +317,10 @@ export function saveBlogPost(postData) {
     localStorage.setItem('novacrest_blog_posts', JSON.stringify(posts));
   }
 
-  // Cloud Firestore Sync
+  // Cloud Firestore Sync (Async background)
   const articleId = postData.id || postData.slug;
-  if (db && articleId) {
-    setDoc(doc(db, "articles", articleId), postData, { merge: true })
-      .then(() => console.log(`[Firestore] Article '${postData.title}' saved to cloud.`))
-      .catch(err => console.error('[Firestore Error]', err));
+  if (articleId) {
+    saveFirestoreDocument("articles", articleId, postData);
   }
 
   return posts;
@@ -339,11 +335,9 @@ export function deleteBlogPost(id) {
     localStorage.setItem('novacrest_blog_posts', JSON.stringify(posts));
   }
 
-  // Cloud Firestore Delete
-  if (db && id) {
-    deleteDoc(doc(db, "articles", id))
-      .then(() => console.log(`[Firestore] Article '${id}' deleted from cloud.`))
-      .catch(err => console.error('[Firestore Error]', err));
+  // Cloud Firestore Delete (Async background)
+  if (id) {
+    deleteFirestoreDocument("articles", id);
   }
 
   return posts;
@@ -353,13 +347,12 @@ export function deleteBlogPost(id) {
  * One-Click Bulk Cloud Sync: Uploads all blog posts to Google Cloud Firestore
  */
 export async function syncAllArticlesToFirestore() {
-  if (!db) throw new Error('Firestore not initialized');
   const posts = getBlogPosts();
   let count = 0;
   for (const post of posts) {
     const postKey = post.id || post.slug;
-    await setDoc(doc(db, "articles", postKey), post, { merge: true });
-    count++;
+    const ok = await saveFirestoreDocument("articles", postKey, post);
+    if (ok) count++;
   }
   return count;
 }
