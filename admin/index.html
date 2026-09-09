@@ -554,28 +554,90 @@
       </section>
 
       <!-- ==================================================================
-           TAB 4: INVESTOR LEADS
+           TAB 4: INVESTOR LEADS & AI CRM SALES PIPELINE
            ================================================================== -->
       <section class="admin-tab-panel" id="tab-leads">
-        <div class="content-card">
-          <div class="content-card-header">
-            <h2 class="content-card-title">Consultation & Inspection Inquiries</h2>
-            <div class="card-actions-row">
-              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnClearLeads">
-                <span>Clear Records</span>
-              </button>
+        <!-- CRM KPI Highlights Header -->
+        <div class="crm-header-kpis">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Active Pipeline Value</span>
+              <div class="stat-icon">💰</div>
             </div>
+            <div class="stat-value" id="crmKpiPipelineVal">₦2.48B</div>
+            <div class="stat-footer">Across all open deal stages</div>
           </div>
 
+          <div class="stat-card success">
+            <div class="stat-header">
+              <span class="stat-label">Total Inquiries</span>
+              <div class="stat-icon">📥</div>
+            </div>
+            <div class="stat-value" id="crmKpiTotalLeads">5</div>
+            <div class="stat-footer">Web forms, WhatsApp & Direct calls</div>
+          </div>
+
+          <div class="stat-card crimson">
+            <div class="stat-header">
+              <span class="stat-label">Scheduled Inspections</span>
+              <div class="stat-icon">🏰</div>
+            </div>
+            <div class="stat-value" id="crmKpiInspections">2</div>
+            <div class="stat-footer">Virtual tours & private site visits</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">AI Qualification Rate</span>
+              <div class="stat-icon">✨</div>
+            </div>
+            <div class="stat-value" id="crmKpiAvgScore">90%</div>
+            <div class="stat-footer">High-net-worth investor liquidity</div>
+          </div>
+        </div>
+
+        <!-- CRM View Switcher & Action Controls -->
+        <div class="crm-view-switch-row">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="crm-btn-group">
+              <button type="button" class="crm-view-btn active" data-view="kanban" id="btnCrmViewKanban">
+                📊 Kanban Pipeline
+              </button>
+              <button type="button" class="crm-view-btn" data-view="table" id="btnCrmViewTable">
+                📋 Table Roster
+              </button>
+            </div>
+            <span style="font-size: 13px; color: var(--admin-text-muted);" id="crmLeadCountSubtitle">Showing all active sales leads</span>
+          </div>
+
+          <div class="card-actions-row">
+            <button type="button" class="btn-admin btn-admin-primary btn-admin-sm" id="btnCrmAddLead">
+              <span>+ New Investor Lead</span>
+            </button>
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnClearLeads">
+              <span>Clear Records</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- View Mode 1: Interactive Sales Pipeline Kanban Board -->
+        <div id="crmKanbanContainer" class="crm-kanban-board">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- View Mode 2: Detailed Table Roster View -->
+        <div id="crmTableContainer" class="content-card" style="display: none;">
           <div class="table-responsive">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Investor Name & Source</th>
-                  <th>Phone / WhatsApp</th>
-                  <th>Interest & Requirements</th>
-                  <th>Received Date</th>
-                  <th>Direct Contact</th>
+                  <th>Investor & Location</th>
+                  <th>Contact Info</th>
+                  <th>Interest & Budget</th>
+                  <th>Pipeline Stage</th>
+                  <th>Risk Level</th>
+                  <th>AI Score</th>
+                  <th style="width: 140px;">Actions</th>
                 </tr>
               </thead>
               <tbody id="leadsTableBody">
@@ -585,6 +647,30 @@
           </div>
         </div>
       </section>
+
+      <!-- Slide-Over Lead Detail & AI Pitch Drawer -->
+      <div class="crm-drawer-backdrop" id="crmDrawerBackdrop">
+        <div class="crm-drawer">
+          <div class="drawer-header">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin: 0;" id="drawerLeadName">Lead Detail Dossier</h3>
+              <span style="font-size: 12px; color: var(--admin-gold);" id="drawerLeadSource">Website Consultation</span>
+            </div>
+            <button type="button" class="modal-close-btn" id="closeCrmDrawerBtn">&times;</button>
+          </div>
+
+          <div class="drawer-body" id="drawerLeadBody">
+            <!-- Dynamic Drawer Content -->
+          </div>
+
+          <div class="drawer-footer">
+            <button type="button" class="btn-admin btn-admin-secondary" id="btnDrawerClose">Close</button>
+            <a href="#" target="_blank" rel="noopener" class="btn-admin btn-admin-gold" id="btnDrawerWhatsApp">
+              <span>Launch WhatsApp Chat ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
 
       <!-- ==================================================================
            TAB 5: SYNC & DATA EXPORT

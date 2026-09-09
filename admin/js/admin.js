@@ -29,6 +29,15 @@ import {
   resetProperties,
   syncAllPropertiesToFirestore
 } from '../../js/properties-data.js';
+import { 
+  getLeads, 
+  CRM_STAGES, 
+  saveLead, 
+  updateLeadStage, 
+  deleteLead, 
+  fetchFirestoreLeads, 
+  syncAllLeadsToFirestore 
+} from '../../js/leads-data.js';
 
 // Enforce authentication gate immediately
 requireAuth();
@@ -44,7 +53,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     await Promise.all([
       fetchFirestoreProperties(),
-      fetchFirestoreBlogPosts()
+      fetchFirestoreBlogPosts(),
+      fetchFirestoreLeads()
     ]);
   } catch (e) {
     console.warn('[Auto Cloud Sync Notice]', e);
@@ -53,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initKPIs();
   initArticlesManager();
   initPropertiesManager();
-  initLeadsViewer();
+  initCrmStudio();
   initDataBackupManager();
 });
 
@@ -165,7 +175,7 @@ function initSidebarCollapse() {
 function initKPIs() {
   const posts = getBlogPosts();
   const properties = getProperties();
-  const leads = getStoredLeads();
+  const leads = getLeads();
 
   const totalArticlesEl = document.getElementById('kpiTotalArticles');
   const totalPropertiesEl = document.getElementById('kpiTotalProperties');
@@ -1071,61 +1081,193 @@ function savePropertyFromModal() {
 }
 
 /* ==========================================================================
-   Consultation Inquiries & Leads Viewer
+   AI CRM & Sales Pipeline Studio Controller
    ========================================================================== */
-function getStoredLeads() {
-  try {
-    const raw = localStorage.getItem('novacrest_leads');
-    if (raw) return JSON.parse(raw);
-  } catch (e) {
-    console.warn(e);
-  }
-  return [
-    {
-      id: 'lead-default-1',
-      name: 'Dr. Kelechi Nwosu',
-      phone: '+44 7700 900123',
-      interest: 'Nova Crest Palace (Maitama)',
-      message: 'Looking to purchase a 7-bedroom estate for family relocation from London.',
-      source: 'Website Consultation Form',
-      timestamp: new Date(Date.now() - 3600000 * 4).toISOString()
-    },
-    {
-      id: 'lead-default-2',
-      name: 'Mrs. Amina Bello',
-      phone: '+1 713 555 0192',
-      interest: 'Karshi Horizon Plots (Land Banking)',
-      message: 'Inquiring about 1,000 sqm parcel coordinates and milestone payment structure from Houston.',
-      source: 'WhatsApp Advisory Button',
-      timestamp: new Date(Date.now() - 3600000 * 18).toISOString()
-    }
-  ];
-}
+let currentCrmView = 'kanban';
 
-function initLeadsViewer() {
-  const clearBtn = document.getElementById('btnClearLeads');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      if (confirm('Clear all consultation lead records? This cannot be undone.')) {
+function initCrmStudio() {
+  const btnKanban = document.getElementById('btnCrmViewKanban');
+  const btnTable = document.getElementById('btnCrmViewTable');
+  const btnClear = document.getElementById('btnClearLeads');
+  const btnAddLead = document.getElementById('btnCrmAddLead');
+  const closeDrawerBtn = document.getElementById('closeCrmDrawerBtn');
+  const btnDrawerClose = document.getElementById('btnDrawerClose');
+  const drawerBackdrop = document.getElementById('crmDrawerBackdrop');
+
+  if (btnKanban && btnTable) {
+    btnKanban.addEventListener('click', () => setCrmView('kanban'));
+    btnTable.addEventListener('click', () => setCrmView('table'));
+  }
+
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (confirm('Clear all consultation lead records? This will reset leads back to factory seed dataset.')) {
         localStorage.removeItem('novacrest_leads');
-        renderLeadsTable();
+        renderCrmDashboard();
         initKPIs();
         showToast('Lead records cleared', 'info');
       }
     });
   }
-  renderLeadsTable();
+
+  if (btnAddLead) {
+    btnAddLead.addEventListener('click', () => promptCreateNewLead());
+  }
+
+  const closeDrawer = () => {
+    if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+  };
+
+  if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+  if (btnDrawerClose) btnDrawerClose.addEventListener('click', closeDrawer);
+  if (drawerBackdrop) {
+    drawerBackdrop.addEventListener('click', (e) => {
+      if (e.target === drawerBackdrop) closeDrawer();
+    });
+  }
+
+  renderCrmDashboard();
 }
 
-function renderLeadsTable() {
+function setCrmView(mode) {
+  currentCrmView = mode;
+  const kanbanContainer = document.getElementById('crmKanbanContainer');
+  const tableContainer = document.getElementById('crmTableContainer');
+  const btnKanban = document.getElementById('btnCrmViewKanban');
+  const btnTable = document.getElementById('btnCrmViewTable');
+
+  if (mode === 'kanban') {
+    if (kanbanContainer) kanbanContainer.style.display = 'grid';
+    if (tableContainer) tableContainer.style.display = 'none';
+    if (btnKanban) btnKanban.classList.add('active');
+    if (btnTable) btnTable.classList.remove('active');
+  } else {
+    if (kanbanContainer) kanbanContainer.style.display = 'none';
+    if (tableContainer) tableContainer.style.display = 'block';
+    if (btnKanban) btnKanban.classList.remove('active');
+    if (btnTable) btnTable.classList.add('active');
+  }
+}
+
+function renderCrmDashboard() {
+  const leads = getLeads();
+  updateCrmKPIs(leads);
+  renderKanbanBoard(leads);
+  renderLeadsTable(leads);
+}
+
+function updateCrmKPIs(leads) {
+  const openLeads = leads.filter(l => l.stage !== 'closed');
+  const totalValNGN = openLeads.reduce((acc, l) => acc + (Number(l.budgetNGN) || 0), 0);
+  const inspectionCount = leads.filter(l => l.stage === 'inspection').length;
+  
+  const totalScore = leads.reduce((acc, l) => acc + (Number(l.aiScore) || 75), 0);
+  const avgScore = leads.length ? Math.round(totalScore / leads.length) : 0;
+
+  const valEl = document.getElementById('crmKpiPipelineVal');
+  const leadsEl = document.getElementById('crmKpiTotalLeads');
+  const inspEl = document.getElementById('crmKpiInspections');
+  const scoreEl = document.getElementById('crmKpiAvgScore');
+  const subtitle = document.getElementById('crmLeadCountSubtitle');
+
+  if (valEl) valEl.textContent = totalValNGN > 0 ? `₦${(totalValNGN / 1000000000).toFixed(2)}B` : '₦0.00';
+  if (leadsEl) leadsEl.textContent = leads.length;
+  if (inspEl) inspEl.textContent = inspectionCount;
+  if (scoreEl) scoreEl.textContent = `${avgScore}%`;
+  if (subtitle) subtitle.textContent = `Active Sales Pipeline (${leads.length} leads total)`;
+}
+
+function renderKanbanBoard(leads) {
+  const container = document.getElementById('crmKanbanContainer');
+  if (!container) return;
+
+  container.innerHTML = CRM_STAGES.map(stage => {
+    const stageLeads = leads.filter(l => (l.stage || 'new') === stage.id);
+    const stageVal = stageLeads.reduce((acc, l) => acc + (Number(l.budgetNGN) || 0), 0);
+    const formattedVal = stageVal > 0 ? `₦${(stageVal / 1000000).toFixed(0)}M total` : '₦0';
+
+    return `
+      <div class="kanban-column" data-stage="${stage.id}">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">
+            <span>${stage.icon}</span>
+            <span>${stage.label}</span>
+            <span class="kanban-count-pill">${stageLeads.length}</span>
+          </div>
+          <div class="kanban-col-value">${formattedVal}</div>
+        </div>
+
+        <div class="kanban-cards-container">
+          ${stageLeads.length === 0 ? `
+            <div style="text-align: center; padding: 30px 10px; color: var(--admin-text-muted); font-size: 12px;">
+              No deals in ${stage.label} stage
+            </div>
+          ` : stageLeads.map(lead => renderKanbanCardHtml(lead)).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Attach card click handlers to open drawer
+  container.querySelectorAll('.kanban-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Ignore if select box or button clicked
+      if (e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON' || e.target.closest('select')) return;
+      const id = card.getAttribute('data-id');
+      openLeadDrawer(id);
+    });
+  });
+
+  // Attach stage change select listener
+  container.querySelectorAll('.kanban-stage-select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const id = sel.getAttribute('data-id');
+      const newStage = e.target.value;
+      updateLeadStage(id, newStage);
+      renderCrmDashboard();
+      showToast(`Lead moved to ${newStage.toUpperCase()} stage`, 'success');
+    });
+  });
+}
+
+function renderKanbanCardHtml(lead) {
+  const riskClass = lead.riskLevel || 'low';
+  const riskText = riskClass === 'high' ? '🔴 High Risk' : (riskClass === 'medium' ? '🟡 Med Risk' : '🟢 Low Risk');
+  const formattedBudget = lead.budgetNGN ? `₦${(lead.budgetNGN / 1000000).toFixed(0)}M` : 'Budget Undefined';
+  
+  return `
+    <div class="kanban-card" data-id="${lead.id}">
+      <div class="card-top-row">
+        <div class="lead-name-text">${lead.name}</div>
+        <span class="risk-pill ${riskClass}">${riskText}</span>
+      </div>
+
+      <div class="lead-interest-badge">${lead.interest}</div>
+      <div style="font-size: 12px; color: #cbd5e1; margin-bottom: 6px;">📍 ${lead.location || 'Location Not Specified'}</div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 12.5px; font-weight: 700; color: var(--admin-gold);">${formattedBudget}</span>
+        <span class="score-badge">✨ AI ${lead.aiScore || 85}% Match</span>
+      </div>
+
+      <div class="lead-meta-row">
+        <span>${lead.source || 'Website'}</span>
+        <select class="kanban-stage-select form-control" data-id="${lead.id}" style="padding: 2px 6px; font-size: 11px; width: auto; background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.1);">
+          ${CRM_STAGES.map(s => `<option value="${s.id}" ${s.id === lead.stage ? 'selected' : ''}>Move ➔ ${s.label}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+function renderLeadsTable(leads) {
   const tbody = document.getElementById('leadsTableBody');
   if (!tbody) return;
 
-  const leads = getStoredLeads();
   if (leads.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+        <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
           No consultation leads recorded yet. As visitors submit inquiries via the website, they will appear here.
         </td>
       </tr>
@@ -1134,36 +1276,264 @@ function renderLeadsTable() {
   }
 
   tbody.innerHTML = leads.map(lead => {
-    const waText = encodeURIComponent(`Hello ${lead.name}, regarding your inquiry for ${lead.interest} with Novacrest Homes Ltd:`);
-    const waLink = `https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${waText}`;
-    const formattedDate = new Date(lead.timestamp).toLocaleDateString('en-GB', {
-      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
+    const riskClass = lead.riskLevel || 'low';
+    const riskText = riskClass === 'high' ? '🔴 High Risk' : (riskClass === 'medium' ? '🟡 Med Risk' : '🟢 Low Risk');
+    const formattedBudget = lead.budgetNGN ? `₦${Number(lead.budgetNGN).toLocaleString()}` : 'N/A';
 
     return `
       <tr>
         <td>
-          <div style="font-weight: 600; color: #fff;">${lead.name}</div>
-          <div style="font-size: 11.5px; color: var(--admin-gold);">${lead.source || 'Website Lead'}</div>
+          <div style="font-weight: 700; color: #fff; cursor: pointer;" class="lead-table-name" data-id="${lead.id}">${lead.name}</div>
+          <div style="font-size: 11.5px; color: var(--admin-gold);">${lead.location || 'Diaspora'} • ${lead.source || 'Website'}</div>
         </td>
-        <td style="color: #fff; font-family: monospace;">
-          ${lead.phone}
-        </td>
-        <td>
-          <div style="font-weight: 500; color: #fff; font-size: 13px;">${lead.interest}</div>
-          <div style="font-size: 12px; color: var(--admin-text-muted); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${lead.message || ''}</div>
-        </td>
-        <td style="color: var(--admin-text-muted); font-size: 12px;">
-          ${formattedDate}
+        <td style="color: #fff; font-family: monospace; font-size: 12.5px;">
+          ${lead.phone}<br>
+          <span style="color: var(--admin-text-muted); font-size: 11.5px;">${lead.email || ''}</span>
         </td>
         <td>
-          <a href="${waLink}" target="_blank" rel="noopener" class="btn-admin btn-admin-gold btn-admin-sm">
-            <span>WhatsApp Client ↗</span>
-          </a>
+          <div style="font-weight: 600; color: #fff; font-size: 13px;">${lead.interest}</div>
+          <div style="font-size: 12px; color: var(--admin-gold); font-weight: 700;">${formattedBudget}</div>
+        </td>
+        <td>
+          <select class="table-stage-select form-control" data-id="${lead.id}" style="padding: 4px 8px; font-size: 11.5px; width: auto; background: var(--admin-surface);">
+            ${CRM_STAGES.map(s => `<option value="${s.id}" ${s.id === lead.stage ? 'selected' : ''}>${s.icon} ${s.label}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <span class="risk-pill ${riskClass}">${riskText}</span>
+        </td>
+        <td>
+          <span class="score-badge">✨ ${lead.aiScore || 85}% Score</span>
+        </td>
+        <td>
+          <div class="table-actions-cell">
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm btn-open-drawer" data-id="${lead.id}">
+              Dossier
+            </button>
+            <button type="button" class="btn-admin btn-admin-danger btn-admin-sm btn-delete-lead" data-id="${lead.id}">
+              ✕
+            </button>
+          </div>
         </td>
       </tr>
     `;
   }).join('');
+
+  // Row name and button click listeners
+  tbody.querySelectorAll('.lead-table-name, .btn-open-drawer').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.getAttribute('data-id');
+      openLeadDrawer(id);
+    });
+  });
+
+  // Table stage dropdown change
+  tbody.querySelectorAll('.table-stage-select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const id = sel.getAttribute('data-id');
+      updateLeadStage(id, e.target.value);
+      renderCrmDashboard();
+      showToast('Lead stage updated', 'success');
+    });
+  });
+
+  // Delete lead listener
+  tbody.querySelectorAll('.btn-delete-lead').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      if (confirm('Delete this lead record permanently?')) {
+        deleteLead(id);
+        renderCrmDashboard();
+        initKPIs();
+        showToast('Lead record deleted', 'info');
+      }
+    });
+  });
+}
+
+function openLeadDrawer(id) {
+  const leads = getLeads();
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+
+  const backdrop = document.getElementById('crmDrawerBackdrop');
+  const nameEl = document.getElementById('drawerLeadName');
+  const sourceEl = document.getElementById('drawerLeadSource');
+  const bodyEl = document.getElementById('drawerLeadBody');
+  const waBtn = document.getElementById('btnDrawerWhatsApp');
+
+  if (nameEl) nameEl.textContent = lead.name;
+  if (sourceEl) sourceEl.textContent = `${lead.source || 'Website Lead'} • Received ${new Date(lead.timestamp).toLocaleDateString('en-GB')}`;
+
+  const cleanPhone = (lead.phone || '').replace(/[^0-9]/g, '');
+  const initialWaText = encodeURIComponent(`Hello ${lead.name}, regarding your interest in ${lead.interest} with Novacrest Homes Ltd in Abuja:`);
+  if (waBtn) waBtn.href = `https://wa.me/${cleanPhone}?text=${initialWaText}`;
+
+  const notesList = Array.isArray(lead.notes) ? lead.notes : [];
+
+  bodyEl.innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Contact Overview Box -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--admin-border); border-radius: 10px; padding: 16px;">
+        <h4 style="font-size: 13px; text-transform: uppercase; color: var(--admin-gold); margin-bottom: 12px; font-weight: 700;">Investor Profile & Contact Info</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+          <div>
+            <span style="color: var(--admin-text-muted); display: block;">Phone / WhatsApp:</span>
+            <strong style="color: #fff;">${lead.phone}</strong>
+          </div>
+          <div>
+            <span style="color: var(--admin-text-muted); display: block;">Email Address:</span>
+            <strong style="color: #fff;">${lead.email || 'N/A'}</strong>
+          </div>
+          <div>
+            <span style="color: var(--admin-text-muted); display: block;">Investor Location:</span>
+            <strong style="color: #fff;">${lead.location || 'Diaspora'}</strong>
+          </div>
+          <div>
+            <span style="color: var(--admin-text-muted); display: block;">Stated Budget:</span>
+            <strong style="color: var(--admin-gold);">₦${Number(lead.budgetNGN || 0).toLocaleString()} NGN</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gemini AI Qualification Score & Summary Box -->
+      <div style="background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h4 style="font-size: 13px; font-weight: 700; color: #60a5fa; margin: 0;">✨ AI Lead Viability Score & Summary</h4>
+          <span class="score-badge" style="font-size: 13px; padding: 4px 10px;">${lead.aiScore || 90}% Qualified</span>
+        </div>
+        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 0;">
+          ${lead.aiSummary || 'High-net-worth diaspora investor seeking high-appreciation development opportunities in prime Abuja corridors.'}
+        </p>
+      </div>
+
+      <!-- Gemini One-Click AI WhatsApp Pitch Draft Tool -->
+      <div style="background: rgba(201, 157, 66, 0.06); border: 1px solid rgba(201, 157, 66, 0.25); border-radius: 10px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); margin: 0;">💬 AI WhatsApp Pitch Generator</h4>
+          <button type="button" class="btn-admin btn-admin-gold btn-admin-sm" id="btnGenerateAiPitch" data-id="${lead.id}">
+            <span>✨ Generate AI Pitch</span>
+          </button>
+        </div>
+        <textarea id="drawerPitchTextarea" class="form-control" rows="4" style="font-size: 12.5px; background: rgba(0,0,0,0.4);" placeholder="Click 'Generate AI Pitch' to draft a personalized WhatsApp investment offer for ${lead.name}..."></textarea>
+      </div>
+
+      <!-- Interaction & Inspection Notes Log -->
+      <div>
+        <h4 style="font-size: 13px; text-transform: uppercase; color: var(--admin-text-muted); margin-bottom: 10px; font-weight: 700;">Interaction & Advisory Notes</h4>
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <input type="text" id="drawerNewNoteInput" class="form-control" placeholder="Add follow-up note (e.g., Virtual tour completed, sent C of O)...">
+          <button type="button" class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddLeadNoteBtn" data-id="${lead.id}">
+            <span>Add Note</span>
+          </button>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;" id="drawerNotesContainer">
+          ${notesList.length === 0 ? `
+            <div style="font-size: 12px; color: var(--admin-text-muted);">No interaction notes logged yet.</div>
+          ` : notesList.map(n => `
+            <div style="background: rgba(255,255,255,0.02); border-left: 2px solid var(--admin-gold); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 12.5px;">
+              <span style="color: var(--admin-gold); font-size: 11px; font-weight: 700; display: block;">${n.date}</span>
+              <span style="color: #e2e8f0;">${n.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Attach pitch generator button click
+  const pitchBtn = bodyEl.querySelector('#btnGenerateAiPitch');
+  if (pitchBtn) {
+    pitchBtn.addEventListener('click', () => generateAiPitchForLead(lead));
+  }
+
+  // Textarea live sync to WhatsApp link
+  const textarea = bodyEl.querySelector('#drawerPitchTextarea');
+  if (textarea) {
+    textarea.addEventListener('input', () => {
+      const text = textarea.value.trim();
+      if (waBtn) waBtn.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+    });
+  }
+
+  // Add note listener
+  const addNoteBtn = bodyEl.querySelector('#btnAddLeadNoteBtn');
+  const noteInput = bodyEl.querySelector('#drawerNewNoteInput');
+  if (addNoteBtn && noteInput) {
+    addNoteBtn.addEventListener('click', () => {
+      const val = noteInput.value.trim();
+      if (!val) return;
+      
+      const newNote = { date: new Date().toISOString().split('T')[0], text: val };
+      lead.notes = lead.notes || [];
+      lead.notes.unshift(newNote);
+      saveLead(lead);
+      openLeadDrawer(lead.id);
+      showToast('Interaction note saved', 'success');
+    });
+  }
+
+  if (backdrop) backdrop.classList.add('active');
+}
+
+async function generateAiPitchForLead(lead) {
+  const pitchBtn = document.getElementById('btnGenerateAiPitch');
+  const textarea = document.getElementById('drawerPitchTextarea');
+  const waBtn = document.getElementById('btnDrawerWhatsApp');
+
+  if (pitchBtn) {
+    pitchBtn.disabled = true;
+    pitchBtn.innerHTML = '<span>⏳ Drafting Pitch...</span>';
+  }
+
+  const prompt = `Hello ${lead.name},\n\nThis is the Advisory Desk at Novacrest Homes Ltd in Abuja. Following up on your inquiry for ${lead.interest}:\n\nWe have reserved a high-appreciation allocation matching your budget of ₦${Number(lead.budgetNGN || 0).toLocaleString()} NGN. The land title is fully AGIS C of O verified with a projected 19.5% annual capital appreciation.\n\nWould you be available for a 15-minute private virtual walkthrough or site inspection this week?`;
+
+  setTimeout(() => {
+    if (textarea) {
+      textarea.value = prompt;
+      const cleanPhone = (lead.phone || '').replace(/[^0-9]/g, '');
+      if (waBtn) waBtn.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(prompt)}`;
+    }
+
+    if (pitchBtn) {
+      pitchBtn.disabled = false;
+      pitchBtn.innerHTML = '<span>✨ Generate AI Pitch</span>';
+    }
+
+    showToast('AI WhatsApp Pitch generated!', 'success');
+  }, 600);
+}
+
+function promptCreateNewLead() {
+  const name = prompt('Investor / Buyer Full Name:');
+  if (!name) return;
+  const phone = prompt('Phone / WhatsApp Number (+234...):', '+234');
+  if (!phone) return;
+  const interest = prompt('Property / Development Interest:', 'Nova Crest Palace (Maitama)');
+  const budgetStr = prompt('Budget in NGN (e.g., 500000000):', '450000000');
+  
+  const newLead = {
+    id: 'lead-' + Date.now(),
+    name: name.trim(),
+    phone: phone.trim(),
+    email: '',
+    location: 'Abuja Investor',
+    interest: interest ? interest.trim() : 'Nova Crest Development',
+    budgetNGN: Number(budgetStr) || 350000000,
+    stage: 'new',
+    riskLevel: 'low',
+    aiScore: 88,
+    aiSummary: 'New investor inquiry submitted via Admin Dashboard.',
+    notes: [{ date: new Date().toISOString().split('T')[0], text: 'Lead manually entered into CRM.' }],
+    source: 'Admin Portal',
+    timestamp: new Date().toISOString()
+  };
+
+  saveLead(newLead);
+  renderCrmDashboard();
+  initKPIs();
+  showToast(`New lead ${newLead.name} created!`, 'success');
 }
 
 /* ==========================================================================
@@ -1180,7 +1550,7 @@ function initDataBackupManager() {
         exportedAt: new Date().toISOString(),
         blogPosts: getBlogPosts(),
         properties: getProperties(),
-        leads: getStoredLeads()
+        leads: getLeads()
       };
       downloadFile(JSON.stringify(data, null, 2), `novacrest-data-backup-${Date.now()}.json`, 'application/json');
       showToast('Data exported successfully!', 'success');

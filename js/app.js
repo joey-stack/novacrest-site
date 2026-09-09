@@ -201,16 +201,22 @@ function initConsultationModal() {
       // Construct WhatsApp direct message as fallback
       const waSummary = encodeURIComponent(`*New Consultation Request*\nName: ${name}\nPhone: ${phone}\nInterest: ${interest}\nNotes: ${message}`);
       
-      // Save lead to local storage for Admin Dashboard
+      // Save lead to local storage for Admin Dashboard CRM
       try {
         const existingLeads = JSON.parse(localStorage.getItem('novacrest_leads') || '[]');
         existingLeads.unshift({
           id: 'lead-' + Date.now(),
           name,
           phone,
-          interest,
-          message,
-          source: 'Consultation Modal',
+          interest: interest || 'Consultation Request',
+          location: 'Website Visitor',
+          budgetNGN: 350000000,
+          stage: 'new',
+          riskLevel: 'low',
+          aiScore: 92,
+          aiSummary: `Submitted web consultation request for ${interest || 'General Portfolio'}. Notes: ${message || 'None provided.'}`,
+          notes: [{ date: new Date().toISOString().split('T')[0], text: `Web inquiry: ${message || 'Consultation requested.'}` }],
+          source: 'Website Form',
           timestamp: new Date().toISOString()
         });
         localStorage.setItem('novacrest_leads', JSON.stringify(existingLeads));
