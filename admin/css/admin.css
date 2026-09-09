@@ -844,6 +844,18 @@ body.sidebar-collapsed .sidebar-collapse-btn svg {
   gap: 16px;
 }
 
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.form-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+
 .admin-modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--admin-border);

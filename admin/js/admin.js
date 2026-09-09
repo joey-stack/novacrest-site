@@ -544,7 +544,8 @@ function renderPropertiesTable() {
         <img src="../${pr.image}" alt="" class="table-thumb" onerror="this.src='../assets/images/nova-crest-palace.jpg'">
       </td>
       <td>
-        <span class="table-title-text">${pr.name}</span>
+        <span class="table-title-text">${pr.name}</span><br>
+        <span style="font-size: 11.5px; color: var(--admin-gold);">${pr.subtitle ? pr.subtitle.substring(0, 52) + '...' : ''}</span><br>
         <span class="table-meta-sub">${pr.district}, Abuja • ${pr.type || 'Residential'}</span>
       </td>
       <td>
@@ -553,9 +554,11 @@ function renderPropertiesTable() {
       </td>
       <td>
         <span class="table-badge table-badge-forecast">${pr.status || 'Available'}</span>
+        <span style="font-size: 10.5px; color: var(--admin-text-muted); display: block; margin-top: 3px;">📜 ${pr.titleStatus || 'C of O'}</span>
       </td>
       <td style="color: var(--admin-text-muted); font-size: 12px;">
-        ${pr.bedrooms ? pr.bedrooms + ' Beds • ' : ''}${pr.landSize || ''}
+        ${pr.bedrooms ? pr.bedrooms + ' Beds • ' : ''}${pr.bathrooms ? pr.bathrooms + ' Baths • ' : ''}${pr.landSize || ''}<br>
+        <span style="font-size: 11px; color: var(--admin-gold);">✨ ${(pr.amenities || []).length} Amenities Listed</span>
       </td>
       <td>
         <div class="table-actions-cell">
@@ -604,10 +607,23 @@ function openPropertyModalForCreate() {
   form.removeAttribute('data-edit-id');
   if (titleEl) titleEl.textContent = 'Add New Development Listing';
 
-  document.getElementById('modalPropImage').value = 'assets/images/nova-crest-palace.jpg';
-  document.getElementById('modalPropStatus').value = 'Available';
-  document.getElementById('modalPropType').value = 'Duplex';
-  document.getElementById('modalPropDistrict').value = 'Guzape';
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  };
+
+  setVal('modalPropImage', 'assets/images/nova-crest-palace.jpg');
+  setVal('modalPropGallery', 'assets/images/nova-crest-palace.jpg, assets/images/your-home-interior.jpg, assets/images/masterplan-aerial.jpg');
+  setVal('modalPropStatus', 'Available');
+  setVal('modalPropType', 'Mansion');
+  setVal('modalPropDistrict', 'Maitama');
+  setVal('modalPropTitleStatus', 'Certificate of Occupancy (C of O)');
+  setVal('modalPropTitleAgency', 'FCDA / AGIS Verified');
+  setVal('modalPropCarParks', '4');
+  setVal('modalPropAmenities', 'Smart Home Automation, Private Heated Infinity Pool, Hybrid Solar Inverter System, Safe Room');
+  setVal('modalPropProxAirport', '28 mins (via Airport Rd Expressway)');
+  setVal('modalPropProxCBD', '8 mins (Central Business District)');
+  setVal('modalPropProxLandmark', '5 mins to Transcorp Hilton');
 
   modal.classList.add('active');
 }
@@ -625,20 +641,32 @@ function openPropertyModalForEdit(id) {
   form.setAttribute('data-edit-id', prop.id);
   if (titleEl) titleEl.textContent = `Edit Property: ${prop.name}`;
 
-  document.getElementById('modalPropName').value = prop.name || '';
-  document.getElementById('modalPropSubtitle').value = prop.subtitle || '';
-  document.getElementById('modalPropDistrict').value = prop.district || 'Maitama';
-  document.getElementById('modalPropPriceNGN').value = prop.priceNGN || '';
-  document.getElementById('modalPropPriceUSD').value = prop.priceUSD || '';
-  document.getElementById('modalPropStatus').value = prop.status || 'Available';
-  document.getElementById('modalPropType').value = prop.type || 'Mansion';
-  const bedsEl = document.getElementById('modalPropBeds');
-  const bathsEl = document.getElementById('modalPropBaths');
-  if (bedsEl) bedsEl.value = prop.bedrooms || '';
-  if (bathsEl) bathsEl.value = prop.bathrooms || '';
-  document.getElementById('modalPropLandSize').value = prop.landSize || '';
-  document.getElementById('modalPropImage').value = prop.image || 'assets/images/nova-crest-palace.jpg';
-  document.getElementById('modalPropDesc').value = prop.description || '';
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  };
+
+  setVal('modalPropName', prop.name);
+  setVal('modalPropSubtitle', prop.subtitle);
+  setVal('modalPropDistrict', prop.district || 'Maitama');
+  setVal('modalPropPriceNGN', prop.priceNGN);
+  setVal('modalPropPriceUSD', prop.priceUSD);
+  setVal('modalPropStatus', prop.status || 'Available');
+  setVal('modalPropType', prop.type || 'Mansion');
+  setVal('modalPropBeds', prop.bedrooms);
+  setVal('modalPropBaths', prop.bathrooms);
+  setVal('modalPropCarParks', prop.carParks || 4);
+  setVal('modalPropLandSize', prop.landSize);
+  setVal('modalPropTitleStatus', prop.titleStatus || 'Certificate of Occupancy (C of O)');
+  setVal('modalPropTitleAgency', prop.titleAgency || 'FCDA / AGIS Verified');
+  setVal('modalPropImage', prop.image || 'assets/images/nova-crest-palace.jpg');
+  setVal('modalPropGallery', Array.isArray(prop.gallery) ? prop.gallery.join(', ') : (prop.image || ''));
+  setVal('modalPropAmenities', Array.isArray(prop.amenities) ? prop.amenities.join(', ') : '');
+  setVal('modalPropProxAirport', prop.proximity?.airport || '');
+  setVal('modalPropProxCBD', prop.proximity?.cbd || '');
+  setVal('modalPropProxLandmark', prop.proximity?.landmark || '');
+  setVal('modalPropDesc', prop.description);
+  setVal('modalPropThesis', prop.investmentThesis);
 
   modal.classList.add('active');
 }
@@ -648,37 +676,72 @@ function savePropertyFromModal() {
   const mode = form.getAttribute('data-mode');
   const editId = form.getAttribute('data-edit-id');
 
-  const name = document.getElementById('modalPropName').value.trim();
+  const getVal = id => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+
+  const name = getVal('modalPropName');
   const id = mode === 'edit' ? editId : generateSlug(name);
-  const subtitle = document.getElementById('modalPropSubtitle').value.trim();
-  const district = document.getElementById('modalPropDistrict').value.trim();
-  const priceNGN = Number(document.getElementById('modalPropPriceNGN').value) || 0;
-  const priceUSD = Number(document.getElementById('modalPropPriceUSD').value) || 0;
-  const status = document.getElementById('modalPropStatus').value;
-  const type = document.getElementById('modalPropType').value;
-  const bedrooms = Number(document.getElementById('modalPropBeds')?.value) || 4;
-  const bathrooms = Number(document.getElementById('modalPropBaths')?.value) || 4;
-  const landSize = document.getElementById('modalPropLandSize').value.trim() || '650 sqm';
-  const image = document.getElementById('modalPropImage').value.trim() || 'assets/images/nova-crest-palace.jpg';
-  const description = document.getElementById('modalPropDesc').value.trim();
+  const subtitle = getVal('modalPropSubtitle');
+  const district = getVal('modalPropDistrict') || 'Maitama';
+  const priceNGN = Number(getVal('modalPropPriceNGN')) || 0;
+  const priceUSD = Number(getVal('modalPropPriceUSD')) || 0;
+  const status = getVal('modalPropStatus') || 'Available';
+  const type = getVal('modalPropType') || 'Mansion';
+  const bedrooms = Number(getVal('modalPropBeds')) || 0;
+  const bathrooms = Number(getVal('modalPropBaths')) || 0;
+  const carParks = Number(getVal('modalPropCarParks')) || 4;
+  const landSize = getVal('modalPropLandSize') || '650 sqm';
+  const titleStatus = getVal('modalPropTitleStatus') || 'Certificate of Occupancy (C of O)';
+  const titleAgency = getVal('modalPropTitleAgency') || 'FCDA / AGIS Verified';
+  const image = getVal('modalPropImage') || 'assets/images/nova-crest-palace.jpg';
+  
+  const rawGallery = getVal('modalPropGallery');
+  const gallery = rawGallery ? rawGallery.split(',').map(s => s.trim()).filter(Boolean) : [image];
+  
+  const rawAmenities = getVal('modalPropAmenities');
+  const amenities = rawAmenities ? rawAmenities.split(',').map(s => s.trim()).filter(Boolean) : [
+    "Smart Home Automation",
+    "AGIS Verified Digital Title Dossier",
+    "24/7 Security Perimeter"
+  ];
+  
+  const proximity = {
+    airport: getVal('modalPropProxAirport') || '25 mins (Airport Rd)',
+    cbd: getVal('modalPropProxCBD') || '8 mins (Central Business District)',
+    landmark: getVal('modalPropProxLandmark') || '5 mins to Transcorp Hilton'
+  };
+
+  const description = getVal('modalPropDesc');
+  const investmentThesis = getVal('modalPropThesis');
 
   const propPayload = {
     id,
     name,
     subtitle,
+    status,
+    badgeType: status === 'Selling Fast' ? 'selling-fast' : (status === 'Sold Out' ? 'coming-soon' : 'available'),
+    chip: type.toUpperCase(),
+    category: 'off-plan',
+    type,
+    purpose: 'For Sale',
     district,
+    address: `${district}, Abuja`,
     priceNGN,
     priceUSD,
-    status,
-    type,
+    titleStatus,
+    titleAgency,
+    landSize,
     bedrooms,
     bathrooms,
-    landSize,
+    carParks,
     image,
-    gallery: [image, "assets/images/your-home-interior.jpg", "assets/images/masterplan-aerial.jpg"],
+    gallery,
+    amenities,
     description,
-    titleStatus: "Certificate of Occupancy (C of O)",
-    titleAgency: "FCDA / AGIS Verified"
+    proximity,
+    investmentThesis
   };
 
   saveProperty(propPayload);
