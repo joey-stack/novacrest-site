@@ -14,6 +14,7 @@ import {
 } from './admin-ai.js';
 import { 
   getBlogPosts, 
+  fetchFirestoreBlogPosts,
   saveBlogPost, 
   deleteBlogPost, 
   resetBlogPosts, 
@@ -22,6 +23,7 @@ import {
 } from '../../js/blog-data.js';
 import { 
   getProperties, 
+  fetchFirestoreProperties,
   saveProperty, 
   deleteProperty, 
   resetProperties,
@@ -31,12 +33,23 @@ import {
 // Enforce authentication gate immediately
 requireAuth();
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initUserProfile();
   initSidebarCollapse();
   initAiSettings();
   initFirestoreSync();
   initNavigationTabs();
+  
+  // Automatically sync live Cloud Firestore data on page load
+  try {
+    await Promise.all([
+      fetchFirestoreProperties(),
+      fetchFirestoreBlogPosts()
+    ]);
+  } catch (e) {
+    console.warn('[Auto Cloud Sync Notice]', e);
+  }
+
   initKPIs();
   initArticlesManager();
   initPropertiesManager();
