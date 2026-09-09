@@ -632,8 +632,10 @@ function openPropertyModalForEdit(id) {
   document.getElementById('modalPropPriceUSD').value = prop.priceUSD || '';
   document.getElementById('modalPropStatus').value = prop.status || 'Available';
   document.getElementById('modalPropType').value = prop.type || 'Mansion';
-  document.getElementById('modalPropBeds').value = prop.bedrooms || '';
-  document.getElementById('modalPropBaths').value = prop.bathrooms || '';
+  const bedsEl = document.getElementById('modalPropBeds');
+  const bathsEl = document.getElementById('modalPropBaths');
+  if (bedsEl) bedsEl.value = prop.bedrooms || '';
+  if (bathsEl) bathsEl.value = prop.bathrooms || '';
   document.getElementById('modalPropLandSize').value = prop.landSize || '';
   document.getElementById('modalPropImage').value = prop.image || 'assets/images/nova-crest-palace.jpg';
   document.getElementById('modalPropDesc').value = prop.description || '';
@@ -654,8 +656,8 @@ function savePropertyFromModal() {
   const priceUSD = Number(document.getElementById('modalPropPriceUSD').value) || 0;
   const status = document.getElementById('modalPropStatus').value;
   const type = document.getElementById('modalPropType').value;
-  const bedrooms = Number(document.getElementById('modalPropBeds').value) || 4;
-  const bathrooms = Number(document.getElementById('modalPropBaths').value) || 4;
+  const bedrooms = Number(document.getElementById('modalPropBeds')?.value) || 4;
+  const bathrooms = Number(document.getElementById('modalPropBaths')?.value) || 4;
   const landSize = document.getElementById('modalPropLandSize').value.trim() || '650 sqm';
   const image = document.getElementById('modalPropImage').value.trim() || 'assets/images/nova-crest-palace.jpg';
   const description = document.getElementById('modalPropDesc').value.trim();
