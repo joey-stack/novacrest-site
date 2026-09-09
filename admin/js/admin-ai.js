@@ -66,7 +66,8 @@ export async function fetchOxylabsMarketData(district, typology) {
       domain: 'com',
       query: query,
       start_page: 1,
-      pages: 1
+      pages: 1,
+      parse: true
     };
 
     const response = await fetch('https://realtime.oxylabs.io/v1/queries', {
@@ -86,7 +87,12 @@ export async function fetchOxylabsMarketData(district, typology) {
     const data = await response.json();
     const organicResults = data?.results?.[0]?.content?.results?.organic || [];
     
-    const snippets = organicResults.slice(0, 3).map(r => `${r.title}: ${r.snippet}`).join('\n');
+    const snippets = organicResults
+      .slice(0, 4)
+      .map(r => `${r.title}: ${r.snippet || r.desc || ''}`)
+      .filter(s => s && !s.endsWith(': '))
+      .join('\n');
+
     return snippets || null;
   } catch (e) {
     console.warn('[Oxylabs Exception]', e);
