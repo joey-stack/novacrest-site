@@ -186,21 +186,34 @@ function initKPIs() {
 }
 
 /* ==========================================================================
-   Blog & Articles Management
+   Blog & Articles Management (Inline Panel Editor View)
    ========================================================================== */
 let articleSearchQuery = '';
 let articleCategoryFilter = 'all';
+
+function switchArticleView(view) {
+  const listView = document.getElementById('articlesListView');
+  const editorView = document.getElementById('articlesEditorView');
+
+  if (view === 'editor') {
+    if (listView) listView.style.display = 'none';
+    if (editorView) editorView.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    if (editorView) editorView.style.display = 'none';
+    if (listView) listView.style.display = 'block';
+  }
+}
 
 function initArticlesManager() {
   const searchInput = document.getElementById('articleSearchInput');
   const categorySelect = document.getElementById('articleCategorySelect');
   const newBtn = document.getElementById('btnNewArticle');
-  const modal = document.getElementById('articleEditorModal');
-  const closeModalBtn = document.getElementById('closeArticleModalBtn');
-  const cancelModalBtn = document.getElementById('cancelArticleModalBtn');
-  const form = document.getElementById('articleEditorForm');
-  const titleInput = document.getElementById('modalArticleTitle');
-  const slugInput = document.getElementById('modalArticleSlug');
+  const form = document.getElementById('inlineArticleForm');
+
+  const cancelBtn1 = document.getElementById('btnCancelArticleEditor');
+  const cancelBtn2 = document.getElementById('btnCancelArticleEditorSecondary');
+  const cancelBtn3 = document.getElementById('btnCancelArticleEditorFooter');
 
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -219,23 +232,9 @@ function initArticlesManager() {
     });
   }
 
-  // Populate category in modal form
-  const modalCatSelect = document.getElementById('modalArticleCategory');
-  if (modalCatSelect) {
-    modalCatSelect.innerHTML = BLOG_CATEGORIES.filter(c => c.slug !== 'all').map(c => `
-      <option value="${c.name}" data-slug="${c.slug}">${c.name}</option>
-    `).join('');
-  }
-
-  // Populate property link in modal form
-  const modalPropSelect = document.getElementById('modalArticleProperty');
-  if (modalPropSelect) {
-    const props = getProperties();
-    modalPropSelect.innerHTML = `<option value="">None (General Market Article)</option>` + 
-      props.map(pr => `<option value="${pr.id}">${pr.name} (${pr.district})</option>`).join('');
-  }
-
-  // Auto generate slug
+  // Auto generate slug on create
+  const titleInput = document.getElementById('inlineArticleTitle');
+  const slugInput = document.getElementById('inlineArticleSlug');
   if (titleInput && slugInput) {
     titleInput.addEventListener('input', () => {
       const mode = form.getAttribute('data-mode');
@@ -245,27 +244,182 @@ function initArticlesManager() {
     });
   }
 
-  if (newBtn && modal) {
+  if (newBtn) {
     newBtn.addEventListener('click', () => {
-      openArticleModalForCreate();
+      openInlineArticleEditorForCreate();
     });
   }
 
-  const closeHandler = () => {
-    if (modal) modal.classList.remove('active');
-  };
-  if (closeModalBtn) closeModalBtn.addEventListener('click', closeHandler);
-  if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeHandler);
+  const cancelHandler = () => switchArticleView('list');
+  if (cancelBtn1) cancelBtn1.addEventListener('click', cancelHandler);
+  if (cancelBtn2) cancelBtn2.addEventListener('click', cancelHandler);
+  if (cancelBtn3) cancelBtn3.addEventListener('click', cancelHandler);
 
   // Form submit
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      saveArticleFromModal();
+      saveArticleFromInlineForm();
     });
   }
 
   renderArticlesTable();
+}
+
+function populateArticlePropertyDropdown() {
+  const select = document.getElementById('inlineArticleRelatedProperty');
+  if (!select) return;
+  const props = getProperties();
+  select.innerHTML = `<option value="">None (General Market Article)</option>` +
+    props.map(pr => `<option value="${pr.id}">${pr.name} (${pr.district})</option>`).join('');
+}
+
+function openInlineArticleEditorForCreate() {
+  const form = document.getElementById('inlineArticleForm');
+  const titleEl = document.getElementById('articleEditorViewTitle');
+
+  form.reset();
+  form.setAttribute('data-mode', 'create');
+  document.getElementById('inlineArticleId').value = '';
+
+  if (titleEl) titleEl.textContent = 'Create New Market Intelligence Article';
+
+  populateArticlePropertyDropdown();
+
+  document.getElementById('inlineArticleCoverImage').value = 'assets/images/masterplan-aerial.jpg';
+  document.getElementById('inlineArticleAuthorName').value = 'Barr. Chukwuemeka Okonkwo';
+  document.getElementById('inlineArticleAuthorRole').value = 'Head of Legal & Title Conveyancing';
+  document.getElementById('inlineArticleAuthorAvatar').value = 'assets/images/about-leadership-banner.jpg';
+  document.getElementById('inlineArticleReadTime').value = '6 min read';
+  document.getElementById('inlineArticleDate').value = 'September 2026';
+
+  document.getElementById('inlineArticleSec1Heading').value = '1. The FCT Legal Framework: FCDA & AGIS Authority';
+  document.getElementById('inlineArticleSec1Content').value = '<p>Unlike other Nigerian states where land tenure is governed primarily through state land registries, the Federal Capital Territory (FCT) is governed strictly under the Land Use Act of 1978 and the FCT Act.</p>';
+
+  document.getElementById('inlineArticleSec2Heading').value = '2. Certificate of Occupancy (C of O): The Gold Standard';
+  document.getElementById('inlineArticleSec2Content').value = '<p>The Certificate of Occupancy is the highest statutory land document issued in Nigeria. In Abuja, a genuine C of O bears the direct signature of the Minister of the FCT.</p>';
+
+  switchArticleView('editor');
+}
+
+function openInlineArticleEditorForEdit(id) {
+  const form = document.getElementById('inlineArticleForm');
+  const titleEl = document.getElementById('articleEditorViewTitle');
+  const posts = getBlogPosts();
+  const post = posts.find(p => p.id === id || p.slug === id);
+
+  if (!post) return;
+
+  form.setAttribute('data-mode', 'edit');
+  if (titleEl) titleEl.textContent = `Edit Article: ${post.title}`;
+
+  populateArticlePropertyDropdown();
+
+  document.getElementById('inlineArticleId').value = post.id || post.slug || '';
+  document.getElementById('inlineArticleTitle').value = post.title || '';
+  document.getElementById('inlineArticleSlug').value = post.slug || post.id || '';
+  document.getElementById('inlineArticleSubtitle').value = post.subtitle || '';
+  document.getElementById('inlineArticleCategory').value = post.category || 'Legal & Due Diligence';
+  document.getElementById('inlineArticleReadTime').value = post.readTime || '6 min read';
+  document.getElementById('inlineArticleDate').value = post.date || 'September 2026';
+
+  document.getElementById('inlineArticleAuthorName').value = post.author?.name || 'Barr. Chukwuemeka Okonkwo';
+  document.getElementById('inlineArticleAuthorRole').value = post.author?.role || 'Head of Legal & Title Conveyancing';
+  document.getElementById('inlineArticleAuthorAvatar').value = post.author?.avatar || 'assets/images/about-leadership-banner.jpg';
+  document.getElementById('inlineArticleCoverImage').value = post.coverImage || 'assets/images/masterplan-aerial.jpg';
+  document.getElementById('inlineArticleRelatedProperty').value = post.relatedPropertyId || '';
+  document.getElementById('inlineArticleFeatured').checked = !!post.featured;
+
+  document.getElementById('inlineArticleSnippet').value = post.snippet || '';
+  document.getElementById('inlineArticleKeyTakeaway').value = post.keyTakeaway || '';
+
+  // Sections
+  const secs = post.sections || [];
+  document.getElementById('inlineArticleSec1Heading').value = secs[0]?.heading || '';
+  document.getElementById('inlineArticleSec1Content').value = secs[0]?.content || '';
+
+  document.getElementById('inlineArticleSec2Heading').value = secs[1]?.heading || '';
+  document.getElementById('inlineArticleSec2Content').value = secs[1]?.content || '';
+
+  document.getElementById('inlineArticleSec3Heading').value = secs[2]?.heading || '';
+  document.getElementById('inlineArticleSec3Content').value = secs[2]?.content || '';
+
+  switchArticleView('editor');
+}
+
+function saveArticleFromInlineForm() {
+  const form = document.getElementById('inlineArticleForm');
+  const mode = form.getAttribute('data-mode');
+
+  const rawId = document.getElementById('inlineArticleId').value.trim();
+  const title = document.getElementById('inlineArticleTitle').value.trim();
+  const slug = document.getElementById('inlineArticleSlug').value.trim() || generateSlug(title);
+  const subtitle = document.getElementById('inlineArticleSubtitle').value.trim();
+  const category = document.getElementById('inlineArticleCategory').value;
+  const readTime = document.getElementById('inlineArticleReadTime').value.trim() || '5 min read';
+  const date = document.getElementById('inlineArticleDate').value.trim() || 'September 2026';
+
+  const authorName = document.getElementById('inlineArticleAuthorName').value.trim() || 'Novacrest Research Desk';
+  const authorRole = document.getElementById('inlineArticleAuthorRole').value.trim() || 'Market Intelligence Advisor';
+  const authorAvatar = document.getElementById('inlineArticleAuthorAvatar').value.trim() || 'assets/images/about-leadership-banner.jpg';
+  const coverImage = document.getElementById('inlineArticleCoverImage').value.trim() || 'assets/images/masterplan-aerial.jpg';
+  const relatedPropertyId = document.getElementById('inlineArticleRelatedProperty').value;
+  const featured = document.getElementById('inlineArticleFeatured').checked;
+
+  const snippet = document.getElementById('inlineArticleSnippet').value.trim();
+  const keyTakeaway = document.getElementById('inlineArticleKeyTakeaway').value.trim();
+
+  // Category Slug Mapper
+  const catSlugMap = {
+    'Legal & Due Diligence': 'legal',
+    'Market Research': 'research',
+    'Investment Strategy': 'strategy',
+    'Infrastructure & Development': 'infrastructure'
+  };
+
+  // Build Sections Array
+  const sections = [];
+  const sec1H = document.getElementById('inlineArticleSec1Heading').value.trim();
+  const sec1C = document.getElementById('inlineArticleSec1Content').value.trim();
+  if (sec1H || sec1C) sections.push({ heading: sec1H, content: sec1C });
+
+  const sec2H = document.getElementById('inlineArticleSec2Heading').value.trim();
+  const sec2C = document.getElementById('inlineArticleSec2Content').value.trim();
+  if (sec2H || sec2C) sections.push({ heading: sec2H, content: sec2C });
+
+  const sec3H = document.getElementById('inlineArticleSec3Heading').value.trim();
+  const sec3C = document.getElementById('inlineArticleSec3Content').value.trim();
+  if (sec3H || sec3C) sections.push({ heading: sec3H, content: sec3C });
+
+  const postPayload = {
+    id: (mode === 'edit' && rawId) ? rawId : slug,
+    slug,
+    title,
+    subtitle,
+    category,
+    categorySlug: catSlugMap[category] || 'legal',
+    readTime,
+    date,
+    isoDate: new Date().toISOString().split('T')[0],
+    author: {
+      name: authorName,
+      role: authorRole,
+      avatar: authorAvatar
+    },
+    coverImage,
+    snippet,
+    keyTakeaway,
+    featured,
+    relatedPropertyId: relatedPropertyId || null,
+    sections
+  };
+
+  saveBlogPost(postPayload);
+
+  switchArticleView('list');
+  renderArticlesTable();
+  initKPIs();
+  showToast(mode === 'edit' ? 'Article updated and synced to Firestore' : 'Article created and published', 'success');
 }
 
 function renderArticlesTable() {
@@ -332,7 +486,7 @@ function renderArticlesTable() {
   tbody.querySelectorAll('.btn-edit-article').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
-      openArticleModalForEdit(id);
+      openInlineArticleEditorForEdit(id);
     });
   });
 
@@ -348,127 +502,6 @@ function renderArticlesTable() {
       }
     });
   });
-}
-
-function openArticleModalForCreate() {
-  const modal = document.getElementById('articleEditorModal');
-  const form = document.getElementById('articleEditorForm');
-  const titleEl = document.getElementById('modalTitleText');
-
-  form.reset();
-  form.setAttribute('data-mode', 'create');
-  form.removeAttribute('data-edit-id');
-  if (titleEl) titleEl.textContent = 'Create New Market Article';
-
-  document.getElementById('modalArticleCover').value = 'assets/images/masterplan-aerial.jpg';
-  document.getElementById('modalArticleAuthor').value = 'Novacrest Research Desk';
-  document.getElementById('modalArticleReadTime').value = '6 min read';
-  document.getElementById('modalArticleDate').value = 'September 2026';
-  document.getElementById('modalArticleSections').value = `### 1. Market Background & Key Highlights\nDetail the latest regulatory or development changes happening in Abuja.\n\n### 2. Cadastral & Legal Considerations\nOutline AGIS compliance, ministerial approvals, and deed perfection.\n\n### 3. Investor Action Plan\nProvide clear recommendations for diaspora and institutional buyers.`;
-
-  modal.classList.add('active');
-}
-
-function openArticleModalForEdit(id) {
-  const modal = document.getElementById('articleEditorModal');
-  const form = document.getElementById('articleEditorForm');
-  const titleEl = document.getElementById('modalTitleText');
-  const posts = getBlogPosts();
-  const post = posts.find(p => p.id === id || p.slug === id);
-
-  if (!post) return;
-
-  form.setAttribute('data-mode', 'edit');
-  form.setAttribute('data-edit-id', post.id);
-  if (titleEl) titleEl.textContent = `Edit Article: ${post.title}`;
-
-  document.getElementById('modalArticleTitle').value = post.title || '';
-  document.getElementById('modalArticleSlug').value = post.slug || post.id || '';
-  document.getElementById('modalArticleSubtitle').value = post.subtitle || '';
-  document.getElementById('modalArticleCategory').value = post.category || 'Legal & Due Diligence';
-  document.getElementById('modalArticleCover').value = post.coverImage || 'assets/images/masterplan-aerial.jpg';
-  document.getElementById('modalArticleAuthor').value = post.author?.name || 'Novacrest Research Desk';
-  document.getElementById('modalArticleReadTime').value = post.readTime || '6 min read';
-  document.getElementById('modalArticleDate').value = post.date || 'September 2026';
-  document.getElementById('modalArticleSnippet').value = post.snippet || '';
-  document.getElementById('modalArticleTakeaway').value = post.keyTakeaway || '';
-  document.getElementById('modalArticleFeatured').checked = !!post.featured;
-  document.getElementById('modalArticleProperty').value = post.relatedPropertyId || '';
-
-  // Serialize sections to editable text
-  if (post.sections && Array.isArray(post.sections)) {
-    const textBlocks = post.sections.map(s => {
-      const cleanHeading = s.heading ? `### ${s.heading}\n` : '';
-      const cleanContent = (s.content || '').replace(/<p>/g, '').replace(/<\/p>/g, '\n\n').trim();
-      return `${cleanHeading}${cleanContent}`;
-    }).join('\n\n---\n\n');
-    document.getElementById('modalArticleSections').value = textBlocks;
-  } else {
-    document.getElementById('modalArticleSections').value = '';
-  }
-
-  modal.classList.add('active');
-}
-
-function saveArticleFromModal() {
-  const form = document.getElementById('articleEditorForm');
-  const mode = form.getAttribute('data-mode');
-  const editId = form.getAttribute('data-edit-id');
-
-  const title = document.getElementById('modalArticleTitle').value.trim();
-  const slug = document.getElementById('modalArticleSlug').value.trim() || generateSlug(title);
-  const subtitle = document.getElementById('modalArticleSubtitle').value.trim();
-  const category = document.getElementById('modalArticleCategory').value;
-  const coverImage = document.getElementById('modalArticleCover').value.trim() || 'assets/images/masterplan-aerial.jpg';
-  const authorName = document.getElementById('modalArticleAuthor').value.trim() || 'Novacrest Research Desk';
-  const readTime = document.getElementById('modalArticleReadTime').value.trim() || '5 min read';
-  const date = document.getElementById('modalArticleDate').value.trim() || 'September 2026';
-  const snippet = document.getElementById('modalArticleSnippet').value.trim();
-  const keyTakeaway = document.getElementById('modalArticleTakeaway').value.trim();
-  const featured = document.getElementById('modalArticleFeatured').checked;
-  const relatedPropertyId = document.getElementById('modalArticleProperty').value;
-  const rawSectionsText = document.getElementById('modalArticleSections').value;
-
-  // Category slug mapper
-  const catSlugMap = {
-    'Legal & Due Diligence': 'legal',
-    'Market Forecast': 'forecast',
-    'Diaspora Concierge': 'diaspora',
-    'Investment Guide': 'investment'
-  };
-
-  // Convert raw text into structured sections
-  const sections = parseSectionsFromText(rawSectionsText);
-
-  const postPayload = {
-    id: mode === 'edit' ? editId : slug,
-    slug,
-    title,
-    subtitle,
-    category,
-    categorySlug: catSlugMap[category] || 'legal',
-    readTime,
-    date,
-    isoDate: new Date().toISOString().split('T')[0],
-    author: {
-      name: authorName,
-      role: 'Market Intelligence Advisor',
-      avatar: 'assets/images/about-leadership-banner.jpg'
-    },
-    coverImage,
-    snippet,
-    keyTakeaway,
-    featured,
-    relatedPropertyId: relatedPropertyId || null,
-    sections
-  };
-
-  saveBlogPost(postPayload);
-
-  document.getElementById('articleEditorModal').classList.remove('active');
-  renderArticlesTable();
-  initKPIs();
-  showToast(mode === 'edit' ? 'Article updated successfully!' : 'New article published successfully!', 'success');
 }
 
 function parseSectionsFromText(text) {
