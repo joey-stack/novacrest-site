@@ -21,6 +21,7 @@
   --admin-info: #3b82f6;
   --admin-radius: 8px;
   --admin-sidebar-width: 260px;
+  --admin-sidebar-width-collapsed: 70px;
 }
 
 * {
@@ -258,7 +259,8 @@ body.login-body {
   bottom: 0;
   left: 0;
   z-index: 100;
-  transition: transform 0.3s ease;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+  overflow: hidden;
 }
 
 .sidebar-brand {
@@ -406,6 +408,84 @@ body.login-body {
   flex-direction: column;
   min-width: 0;
   min-height: 100vh;
+  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Collapsible Sidebar States
+   ========================================================================== */
+body.sidebar-collapsed .admin-sidebar {
+  width: var(--admin-sidebar-width-collapsed);
+}
+
+body.sidebar-collapsed .admin-main-wrapper {
+  margin-left: var(--admin-sidebar-width-collapsed);
+}
+
+body.sidebar-collapsed .sidebar-brand {
+  padding: 18px 12px;
+  justify-content: center;
+}
+
+body.sidebar-collapsed .sidebar-logo-img {
+  height: 26px;
+}
+
+body.sidebar-collapsed .sidebar-brand-badge,
+body.sidebar-collapsed .nav-section-title,
+body.sidebar-collapsed .admin-nav-item span,
+body.sidebar-collapsed .admin-user-name,
+body.sidebar-collapsed .admin-user-role {
+  display: none !important;
+}
+
+body.sidebar-collapsed .admin-nav-item {
+  padding: 12px 0;
+  justify-content: center;
+  gap: 0;
+}
+
+body.sidebar-collapsed .admin-nav-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+body.sidebar-collapsed .admin-sidebar-footer {
+  padding: 14px 6px;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+
+body.sidebar-collapsed .sidebar-collapse-btn svg {
+  transform: rotate(180deg);
+}
+
+/* Sidebar Collapse Toggle Button */
+.sidebar-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--admin-surface-card);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.sidebar-collapse-btn:hover {
+  color: var(--admin-gold);
+  border-color: var(--admin-gold);
+  background: var(--admin-surface-hover);
+}
+
+.sidebar-collapse-btn svg {
+  transition: transform 0.25s ease;
 }
 
 .admin-topbar {

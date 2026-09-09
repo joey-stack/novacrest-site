@@ -23,6 +23,7 @@ requireAuth();
 
 document.addEventListener('DOMContentLoaded', () => {
   initUserProfile();
+  initSidebarCollapse();
   initNavigationTabs();
   initKPIs();
   initArticlesManager();
@@ -108,6 +109,27 @@ function initNavigationTabs() {
   if (mobileBtn && sidebar) {
     mobileBtn.addEventListener('click', () => {
       sidebar.classList.toggle('open');
+    });
+  }
+}
+
+/* ==========================================================================
+   Sidebar Collapse Toggle & LocalStorage Persistence
+   ========================================================================== */
+const SIDEBAR_COLLAPSE_KEY = 'novacrest_sidebar_collapsed';
+
+function initSidebarCollapse() {
+  const collapseBtn = document.getElementById('sidebarCollapseBtn');
+  const isCollapsed = localStorage.getItem(SIDEBAR_COLLAPSE_KEY) === 'true';
+
+  if (isCollapsed) {
+    document.body.classList.add('sidebar-collapsed');
+  }
+
+  if (collapseBtn) {
+    collapseBtn.addEventListener('click', () => {
+      const currentlyCollapsed = document.body.classList.toggle('sidebar-collapsed');
+      localStorage.setItem(SIDEBAR_COLLAPSE_KEY, currentlyCollapsed ? 'true' : 'false');
     });
   }
 }
