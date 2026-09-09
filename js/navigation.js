@@ -4,6 +4,7 @@
  */
 
 import { getCurrency, setCurrency } from './currency.js';
+import './analytics.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll();

@@ -4,6 +4,7 @@
  */
 
 import { requireAuth, getCurrentUser, logout } from './admin-auth.js';
+import '../../js/analytics.js';
 import { 
   getAiCredentials, 
   saveAiCredentials, 
