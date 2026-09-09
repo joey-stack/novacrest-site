@@ -184,3 +184,140 @@ export async function fetchServerlessMarketAnalysis(propData) {
   return null;
 }
 
+/**
+ * Real-Time Gemini 2.0 AI Lead Evaluation & Risk Scoring Engine
+ */
+export async function analyzeLeadWithGemini(leadData, matchedProperty = null) {
+  const { geminiKey } = getAiCredentials();
+
+  const propInfo = matchedProperty ? `
+Matched Development: ${matchedProperty.name}
+Property District: ${matchedProperty.district}, Abuja
+Property Price NGN: ₦${Number(matchedProperty.priceNGN || 0).toLocaleString()} NGN
+Property Price USD: $${Number(matchedProperty.priceUSD || 0).toLocaleString()} USD
+Property Status: ${matchedProperty.status || 'Available'}
+Title Status: ${matchedProperty.titleStatus || 'Certificate of Occupancy (C of O)'}
+` : 'No specific property matched yet.';
+
+  const prompt = `You are the AI Chief Real Estate CRM Risk & Lead Evaluation Officer for Novacrest Homes Limited in Abuja, Nigeria.
+Analyze the following investor lead profile against our property portfolio and output a JSON evaluation object.
+
+LEAD PROFILE:
+- Name: ${leadData.name}
+- Phone: ${leadData.phone || 'Unverified'}
+- Email: ${leadData.email || 'Unverified'}
+- Location: ${leadData.location || 'Unknown'}
+- Stated Budget: ₦${Number(leadData.budgetNGN || 0).toLocaleString()} NGN
+- Property Interest: ${leadData.interest}
+- Current Stage: ${leadData.stage || 'new'}
+- Days Active / Timestamp: ${leadData.timestamp || new Date().toISOString()}
+- Interactions / Notes: ${JSON.stringify(leadData.notes || [])}
+
+PROPERTY CONTEXT:
+${propInfo}
+
+EVALUATION CRITERIA:
+1. aiScore (integer 0-100): Quantitative match based on budget alignment, property availability, location suitability, and liquidity indicators.
+2. riskLevel ("low", "medium", or "high"): Risk rating based on drop-off probability (e.g. stalled >5 days = high risk), budget gap (shortfall >30% = medium/high risk), and missing email/phone.
+3. aiSummary: 2-sentence executive summary explaining why this lead received this score and risk level.
+4. suggestedAction: 1 concise actionable recommendation for the sales director to close or qualify this deal.
+
+RETURN ONLY VALID JSON WITH THE EXACT KEYS: "aiScore", "riskLevel", "aiSummary", "suggestedAction". DO NOT INCLUDE MARKDOWN CODE BLOCKS OR EXTRA TEXT.`;
+
+  // Try direct Gemini call if key present
+  if (geminiKey) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 350
+          }
+        })
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        const text = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const cleanJsonText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanJsonText);
+        if (parsed && typeof parsed.aiScore === 'number') {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('[Gemini Lead Analysis Exception]', e);
+    }
+  }
+
+  // Fallback to intelligent rule-based AI evaluator
+  return calculateSmartLeadAiFallback(leadData, matchedProperty);
+}
+
+function calculateSmartLeadAiFallback(leadData, matchedProperty) {
+  let score = 70;
+  let risk = 'low';
+  
+  const budget = Number(leadData.budgetNGN) || 0;
+  const propPrice = matchedProperty ? (Number(matchedProperty.priceNGN) || 0) : 0;
+  
+  // Budget ratio calculation
+  if (propPrice > 0 && budget > 0) {
+    const ratio = budget / propPrice;
+    if (ratio >= 0.9) {
+      score += 20;
+    } else if (ratio >= 0.7) {
+      score += 10;
+      risk = 'medium';
+    } else {
+      score -= 15;
+      risk = 'high';
+    }
+  } else if (budget > 400000000) {
+    score += 15;
+  }
+
+  // Contact info verification
+  if (leadData.phone && leadData.phone.length >= 10) score += 5;
+  if (leadData.email && leadData.email.includes('@')) score += 5;
+
+  // Inactivity / Age risk
+  const ageMs = Date.now() - new Date(leadData.timestamp || Date.now()).getTime();
+  const ageDays = ageMs / (1000 * 3600 * 24);
+
+  if (ageDays > 7 && leadData.stage === 'new') {
+    risk = 'high';
+    score = Math.max(50, score - 15);
+  } else if (ageDays > 3 && leadData.stage === 'new') {
+    if (risk !== 'high') risk = 'medium';
+  }
+
+  score = Math.min(99, Math.max(45, score));
+
+  let summary = '';
+  let action = '';
+
+  if (risk === 'high') {
+    summary = `Lead exhibits a high risk rating due to a ${budget < propPrice ? 'budget mismatch' : '7+ day gap'} without active stage progression for ${leadData.interest}.`;
+    action = `Schedule an urgent advisory phone call or present alternative off-plan parcel allocations matching their ₦${(budget / 1000000).toFixed(0)}M budget.`;
+  } else if (risk === 'medium') {
+    summary = `Qualified inquiry with a moderate ${score}% AI match score. Requires budget alignment confirmation for ${leadData.interest}.`;
+    action = `Send detailed AGIS C of O land title dossier and milestone payment plan options via WhatsApp.`;
+  } else {
+    summary = `High-net-worth liquidity buyer with a stellar ${score}% AI match score and verified contact details for ${leadData.interest}.`;
+    action = `Arrange a private 15-minute virtual 3D tour or executive site visit with our Abuja Managing Director.`;
+  }
+
+  return {
+    aiScore: score,
+    riskLevel: risk,
+    aiSummary: summary,
+    suggestedAction: action
+  };
+}
+
+

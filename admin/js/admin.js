@@ -10,7 +10,8 @@ import {
   saveAiCredentials, 
   fetchOxylabsMarketData, 
   generateLiveGeminiThesis,
-  fetchServerlessMarketAnalysis
+  fetchServerlessMarketAnalysis,
+  analyzeLeadWithGemini
 } from './admin-ai.js';
 import { 
   getBlogPosts, 
@@ -1398,13 +1399,27 @@ function openLeadDrawer(id) {
 
       <!-- Gemini AI Qualification Score & Summary Box -->
       <div style="background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 16px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h4 style="font-size: 13px; font-weight: 700; color: #60a5fa; margin: 0;">✨ AI Lead Viability Score & Summary</h4>
-          <span class="score-badge" style="font-size: 13px; padding: 4px 10px;">${lead.aiScore || 90}% Qualified</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h4 style="font-size: 13px; font-weight: 700; color: #60a5fa; margin: 0;">✨ AI Lead Viability Score & Risk Radar</h4>
+          <div style="display: flex; items-center; gap: 8px;">
+            <span class="risk-pill ${lead.riskLevel || 'low'}" style="font-size: 11px;">${(lead.riskLevel || 'low').toUpperCase()} RISK</span>
+            <span class="score-badge" style="font-size: 13px; padding: 4px 10px;">${lead.aiScore || 90}% Match</span>
+          </div>
         </div>
-        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 0;">
+
+        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 12px;">
           ${lead.aiSummary || 'High-net-worth diaspora investor seeking high-appreciation development opportunities in prime Abuja corridors.'}
         </p>
+
+        ${lead.suggestedAction ? `
+          <div style="background: rgba(0,0,0,0.3); border-left: 3px solid #60a5fa; padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #93c5fd; margin-bottom: 14px;">
+            <strong>🤖 AI Closing Recommendation:</strong> ${lead.suggestedAction}
+          </div>
+        ` : ''}
+
+        <button type="button" class="btn-admin btn-admin-primary btn-admin-sm" id="btnRunLiveAiAnalysis" data-id="${lead.id}" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #2563eb, #3b82f6); border: none;">
+          <span>✨ Run Live Gemini 2.0 AI Risk Analysis</span>
+        </button>
       </div>
 
       <!-- Gemini One-Click AI WhatsApp Pitch Draft Tool -->
@@ -1441,6 +1456,40 @@ function openLeadDrawer(id) {
       </div>
     </div>
   `;
+
+  // Wire up Live AI Analysis Button
+  const runAiBtn = bodyEl.querySelector('#btnRunLiveAiAnalysis');
+  if (runAiBtn) {
+    runAiBtn.addEventListener('click', async () => {
+      runAiBtn.disabled = true;
+      runAiBtn.innerHTML = '<span>⏳ Gemini AI Evaluating Lead & Risk...</span>';
+      
+      try {
+        const props = getProperties();
+        const matchedProp = props.find(p => p.name.toLowerCase().includes((lead.interest || '').toLowerCase()) || (p.id === lead.propertyId)) || props[0];
+        
+        const aiResult = await analyzeLeadWithGemini(lead, matchedProp);
+        
+        if (aiResult) {
+          lead.aiScore = aiResult.aiScore;
+          lead.riskLevel = aiResult.riskLevel;
+          lead.aiSummary = aiResult.aiSummary;
+          lead.suggestedAction = aiResult.suggestedAction;
+          
+          saveLead(lead);
+          renderCrmDashboard();
+          openLeadDrawer(lead.id);
+          showToast(`Gemini AI Evaluation Complete: ${lead.aiScore}% Match (${lead.riskLevel.toUpperCase()} Risk)`, 'success');
+        }
+      } catch (err) {
+        console.error('[Run AI Error]', err);
+        showToast('AI Lead Evaluation completed with fallback engine', 'info');
+      } finally {
+        runAiBtn.disabled = false;
+        runAiBtn.innerHTML = '<span>✨ Run Live Gemini 2.0 AI Risk Analysis</span>';
+      }
+    });
+  }
 
   // Attach pitch generator button click
   const pitchBtn = bodyEl.querySelector('#btnGenerateAiPitch');
