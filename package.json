@@ -2,5 +2,8 @@
   "name": "novacrest-site",
   "version": "1.0.0",
   "type": "module",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "firebase": "^12.18.0"
+  }
 }
