@@ -269,6 +269,8 @@ function initArticlesManager() {
     searchInput.addEventListener('input', (e) => {
       articleSearchQuery = e.target.value.toLowerCase().trim();
       renderArticlesTable();
+      const artGridView = document.getElementById('articleGridView');
+      if (artGridView && artGridView.style.display !== 'none') renderArticlesGrid();
     });
   }
 
@@ -279,6 +281,8 @@ function initArticlesManager() {
     categorySelect.addEventListener('change', (e) => {
       articleCategoryFilter = e.target.value;
       renderArticlesTable();
+      const artGridView = document.getElementById('articleGridView');
+      if (artGridView && artGridView.style.display !== 'none') renderArticlesGrid();
     });
   }
 
@@ -310,6 +314,33 @@ function initArticlesManager() {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       saveArticleFromInlineForm();
+    });
+  }
+
+  // Article view toggle wiring
+  const btnArtList = document.getElementById('btnArticleListView');
+  const btnArtGrid = document.getElementById('btnArticleGridView');
+  const artListView = document.getElementById('articleListView');
+  const artGridView = document.getElementById('articleGridView');
+
+  if (btnArtList && btnArtGrid) {
+    btnArtList.addEventListener('click', () => {
+      btnArtList.classList.add('active');
+      btnArtList.setAttribute('aria-pressed', 'true');
+      btnArtGrid.classList.remove('active');
+      btnArtGrid.setAttribute('aria-pressed', 'false');
+      artListView.style.display = '';
+      artGridView.style.display = 'none';
+    });
+
+    btnArtGrid.addEventListener('click', () => {
+      btnArtGrid.classList.add('active');
+      btnArtGrid.setAttribute('aria-pressed', 'true');
+      btnArtList.classList.remove('active');
+      btnArtList.setAttribute('aria-pressed', 'false');
+      artGridView.style.display = '';
+      artListView.style.display = 'none';
+      renderArticlesGrid();
     });
   }
 
@@ -465,6 +496,8 @@ function saveArticleFromInlineForm() {
 
   switchArticleView('list');
   renderArticlesTable();
+  const artGridView = document.getElementById('articleGridView');
+  if (artGridView && artGridView.style.display !== 'none') renderArticlesGrid();
   initKPIs();
   showToast(mode === 'edit' ? 'Article updated and synced to Firestore' : 'Article created and published', 'success');
 }
@@ -575,6 +608,80 @@ function renderArticlesTable() {
       const id = btn.getAttribute('data-id');
       if (confirm('Are you sure you want to permanently delete this article?')) {
         deleteBlogPost(id);
+        renderArticlesTable();
+        const artGridView = document.getElementById('articleGridView');
+        if (artGridView && artGridView.style.display !== 'none') renderArticlesGrid();
+        initKPIs();
+        showToast('Article deleted successfully', 'success');
+      }
+    });
+  });
+}
+
+function renderArticlesGrid() {
+  const grid = document.getElementById('articlesGridBody');
+  if (!grid) return;
+
+  const posts = getBlogPosts();
+  const filtered = posts.filter(p => {
+    const matchesCat = articleCategoryFilter === 'all' || p.categorySlug === articleCategoryFilter;
+    const matchesSearch = !articleSearchQuery ||
+      p.title.toLowerCase().includes(articleSearchQuery) ||
+      (p.snippet || '').toLowerCase().includes(articleSearchQuery) ||
+      p.category.toLowerCase().includes(articleSearchQuery);
+    return matchesCat && matchesSearch;
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = `<p style="color:var(--admin-text-muted);padding:40px;text-align:center;">No articles found. Click "+ New Article" to create one.</p>`;
+    return;
+  }
+
+  const badgeClass = slug => {
+    const map = { legal: 'legal', research: 'forecast', strategy: 'investment', infrastructure: 'diaspora' };
+    return map[slug] || 'legal';
+  };
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="prop-card">
+      <img
+        src="../${p.coverImage}"
+        alt="${p.title}"
+        class="prop-card-image"
+        onerror="this.src='../assets/images/masterplan-aerial.jpg'"
+      >
+      <div class="prop-card-body">
+        <div class="prop-card-header-row">
+          <span class="table-badge table-badge-${badgeClass(p.categorySlug)}" style="flex-shrink:0;">${p.category}</span>
+          ${p.featured ? '<span style="color:var(--admin-gold);font-size:13px;font-weight:700;">★</span>' : ''}
+        </div>
+        <div class="prop-card-name" style="margin-top:4px;">${p.title}</div>
+        <div class="prop-card-district">${p.author?.name || 'Novacrest'} &bull; ${p.date || 'Recent'}</div>
+        <div class="prop-card-specs" style="margin-top:4px;">
+          <span>${p.readTime || '5 min read'}</span>
+        </div>
+        ${p.snippet ? `<div style="font-size:12px;color:var(--admin-text-muted);margin-top:6px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.snippet}</div>` : ''}
+      </div>
+      <div class="prop-card-actions">
+        <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm btn-edit-article" data-id="${p.id}">Edit</button>
+        <a href="../article.html?id=${p.slug || p.id}" target="_blank" class="btn-admin btn-admin-secondary btn-admin-sm">View &#8599;</a>
+        <button type="button" class="btn-admin btn-admin-danger btn-admin-sm btn-delete-article" data-id="${p.id}" title="Delete">&#x2715;</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Wire edit buttons
+  grid.querySelectorAll('.btn-edit-article').forEach(btn => {
+    btn.addEventListener('click', () => openInlineArticleEditorForEdit(btn.getAttribute('data-id')));
+  });
+
+  // Wire delete buttons
+  grid.querySelectorAll('.btn-delete-article').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      if (confirm('Are you sure you want to permanently delete this article?')) {
+        deleteBlogPost(id);
+        renderArticlesGrid();
         renderArticlesTable();
         initKPIs();
         showToast('Article deleted successfully', 'success');

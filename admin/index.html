@@ -162,18 +162,29 @@
               <select id="articleCategorySelect" class="form-control" style="width: auto; padding: 7px 12px; font-size: 13px;">
                 <!-- Populated via JS -->
               </select>
+              <!-- View toggle -->
+              <div class="prop-view-toggle" id="articleViewToggle" role="group" aria-label="View mode">
+                <button type="button" class="prop-toggle-btn active" id="btnArticleListView" title="List View" aria-pressed="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-10v2h14V7H7z"/></svg>
+                  <span>List</span>
+                </button>
+                <button type="button" class="prop-toggle-btn" id="btnArticleGridView" title="Grid View" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4zm-6 4v8h8v-8h-8zm6 6h-4v-4h4v4z"/></svg>
+                  <span>Grid</span>
+                </button>
+              </div>
               <button type="button" class="btn-admin btn-admin-primary" id="btnNewArticle">
                 <span>+ New Article</span>
               </button>
             </div>
           </div>
 
-          <div class="table-responsive">
+          <div class="table-responsive" id="articleListView">
             <table class="admin-table">
               <thead>
                 <tr>
                   <th style="width: 60px;">Cover</th>
-                  <th>Title & Slug</th>
+                  <th>Title &amp; Slug</th>
                   <th>Category</th>
                   <th>Author</th>
                   <th>Published</th>
@@ -185,6 +196,15 @@
               </tbody>
             </table>
           </div>
+
+          <!-- ARTICLE GRID VIEW -->
+          <div class="prop-grid-container" id="articleGridView" style="display:none;">
+            <div class="prop-grid" id="articlesGridBody">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+
         </div>
 
         <!-- View 2: Inline Article Editor View (WordPress CMS Studio Style) -->
