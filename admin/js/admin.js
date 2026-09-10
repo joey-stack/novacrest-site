@@ -508,6 +508,33 @@ function initPropertiesManager() {
     });
   }
 
+  // View toggle wiring
+  const btnList = document.getElementById('btnPropListView');
+  const btnGrid = document.getElementById('btnPropGridView');
+  const listView = document.getElementById('propListView');
+  const gridView = document.getElementById('propGridView');
+
+  if (btnList && btnGrid) {
+    btnList.addEventListener('click', () => {
+      btnList.classList.add('active');
+      btnList.setAttribute('aria-pressed', 'true');
+      btnGrid.classList.remove('active');
+      btnGrid.setAttribute('aria-pressed', 'false');
+      listView.style.display = '';
+      gridView.style.display = 'none';
+    });
+
+    btnGrid.addEventListener('click', () => {
+      btnGrid.classList.add('active');
+      btnGrid.setAttribute('aria-pressed', 'true');
+      btnList.classList.remove('active');
+      btnList.setAttribute('aria-pressed', 'false');
+      gridView.style.display = '';
+      listView.style.display = 'none';
+      renderPropertiesGrid();
+    });
+  }
+
   renderPropertiesTable();
 }
 
@@ -564,6 +591,70 @@ function renderPropertiesTable() {
       const id = btn.getAttribute('data-id');
       if (confirm('Are you sure you want to remove this property listing?')) {
         deleteProperty(id);
+        renderPropertiesTable();
+        initKPIs();
+        showToast('Property listing removed', 'success');
+      }
+    });
+  });
+}
+
+function renderPropertiesGrid() {
+  const grid = document.getElementById('propertiesGridBody');
+  if (!grid) return;
+
+  const props = getProperties();
+
+  if (!props.length) {
+    grid.innerHTML = `<p style="color:var(--admin-text-muted);padding:40px;text-align:center;">No developments found.</p>`;
+    return;
+  }
+
+  grid.innerHTML = props.map(pr => `
+    <div class="prop-card">
+      <img
+        src="../${pr.image}"
+        alt="${pr.name}"
+        class="prop-card-image"
+        onerror="this.src='../assets/images/nova-crest-palace.jpg'"
+      >
+      <div class="prop-card-body">
+        <div class="prop-card-header-row">
+          <div>
+            <div class="prop-card-name">${pr.name}</div>
+            <div class="prop-card-district">${pr.district}, Abuja &bull; ${pr.type || 'Residential'}</div>
+          </div>
+          <span class="table-badge table-badge-forecast" style="flex-shrink:0;">${pr.status || 'Available'}</span>
+        </div>
+        <div class="prop-card-price">
+          &#8358;${Number(pr.priceNGN || 0).toLocaleString()}
+          <span class="prop-card-price-usd">&nbsp;/ $${Number(pr.priceUSD || 0).toLocaleString()} USD</span>
+        </div>
+        ${(pr.bedrooms || pr.landSize) ? `
+        <div class="prop-card-specs">
+          ${pr.bedrooms ? `<span>${pr.bedrooms} Bedrooms</span>` : ''}
+          ${pr.bedrooms && pr.landSize ? '<span class="prop-card-spec-dot"></span>' : ''}
+          ${pr.landSize ? `<span>${pr.landSize}</span>` : ''}
+        </div>` : ''}
+      </div>
+      <div class="prop-card-actions">
+        <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm btn-edit-prop" data-id="${pr.id}">Edit</button>
+        <a href="../property.html?id=${pr.id}" target="_blank" class="btn-admin btn-admin-secondary btn-admin-sm">View &#8599;</a>
+        <button type="button" class="btn-admin btn-admin-danger btn-admin-sm btn-delete-prop" data-id="${pr.id}" title="Delete">&#x2715;</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Wire edit & delete on grid cards
+  grid.querySelectorAll('.btn-edit-prop').forEach(btn => {
+    btn.addEventListener('click', () => openPropertyModalForEdit(btn.getAttribute('data-id')));
+  });
+  grid.querySelectorAll('.btn-delete-prop').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      if (confirm('Are you sure you want to remove this property listing?')) {
+        deleteProperty(id);
+        renderPropertiesGrid();
         renderPropertiesTable();
         initKPIs();
         showToast('Property listing removed', 'success');
@@ -661,6 +752,8 @@ function savePropertyFromModal() {
 
   document.getElementById('propertyEditorModal').classList.remove('active');
   renderPropertiesTable();
+  const gridView = document.getElementById('propGridView');
+  if (gridView && gridView.style.display !== 'none') renderPropertiesGrid();
   initKPIs();
   showToast(mode === 'edit' ? 'Property details updated!' : 'New property added to catalog!', 'success');
 }
