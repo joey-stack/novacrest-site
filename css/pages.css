@@ -134,15 +134,23 @@
   color: var(--color-ink-900);
 }
 
-.property-detail-page .breadcrumbs {
+.property-detail-page .breadcrumbs,
+.breadcrumbs-light {
   color: var(--color-slate-500);
 }
 
-.property-detail-page .breadcrumbs a {
+.property-detail-page .breadcrumbs a,
+.breadcrumbs-light a {
   color: var(--color-bronze);
 }
 
-.property-detail-page .breadcrumbs span.current {
+.property-detail-page .breadcrumbs a:hover,
+.breadcrumbs-light a:hover {
+  color: var(--color-ink-900);
+}
+
+.property-detail-page .breadcrumbs span.current,
+.breadcrumbs-light span.current {
   color: var(--color-ink-900);
 }
 

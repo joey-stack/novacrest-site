@@ -3,6 +3,12 @@
  * Abuja, Nigeria - Diaspora & Luxury Real Estate
  */
 
+import { 
+  fetchFirestoreCollection, 
+  saveFirestoreDocument, 
+  deleteFirestoreDocument 
+} from './firebase-config.js';
+
 const DEFAULT_PROPERTIES = [
   {
     id: "nova-crest-palace",
@@ -584,6 +590,27 @@ export function getProperties() {
   return DEFAULT_PROPERTIES;
 }
 
+/**
+ * Fetch live property documents from Google Cloud Firestore
+ */
+export async function fetchFirestoreProperties() {
+  try {
+    const firestoreProps = await fetchFirestoreCollection("properties");
+    if (firestoreProps && firestoreProps.length > 0) {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('novacrest_properties', JSON.stringify(firestoreProps));
+      }
+      return firestoreProps;
+    }
+  } catch (err) {
+    console.warn('[Firestore] Falling back to local dataset:', err);
+  }
+  return getProperties();
+}
+
+/**
+ * Save property to both local cache and Google Cloud Firestore
+ */
 export function saveProperty(propData) {
   const props = getProperties().slice();
   const existingIdx = props.findIndex(p => p.id === propData.id);
@@ -595,15 +622,43 @@ export function saveProperty(propData) {
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.setItem('novacrest_properties', JSON.stringify(props));
   }
+
+  // Cloud Firestore Sync (Async background)
+  if (propData.id) {
+    saveFirestoreDocument("properties", propData.id, propData);
+  }
+
   return props;
 }
 
+/**
+ * Delete property from both local cache and Google Cloud Firestore
+ */
 export function deleteProperty(id) {
   const props = getProperties().filter(p => p.id !== id);
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.setItem('novacrest_properties', JSON.stringify(props));
   }
+
+  // Cloud Firestore Delete (Async background)
+  if (id) {
+    deleteFirestoreDocument("properties", id);
+  }
+
   return props;
+}
+
+/**
+ * One-Click Bulk Cloud Sync: Uploads all properties to Google Cloud Firestore
+ */
+export async function syncAllPropertiesToFirestore() {
+  const props = getProperties();
+  let count = 0;
+  for (const prop of props) {
+    const ok = await saveFirestoreDocument("properties", prop.id, prop);
+    if (ok) count++;
+  }
+  return count;
 }
 
 export function resetProperties() {
@@ -618,8 +673,10 @@ export const PROPERTIES = getProperties();
 if (typeof window !== 'undefined') {
   window.NovacrestPropertyStore = {
     getProperties,
+    fetchFirestoreProperties,
     saveProperty,
     deleteProperty,
+    syncAllPropertiesToFirestore,
     resetProperties,
     DEFAULT_PROPERTIES
   };

@@ -69,6 +69,9 @@
         <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Menu">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
         </button>
+        <button type="button" class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Toggle Sidebar Collapse" title="Collapse / Expand Sidebar">
+          <svg class="icon-collapse" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
         <h1 class="topbar-page-title" id="topbarPageTitle">Executive Dashboard Overview</h1>
       </div>
 
@@ -150,7 +153,8 @@
            TAB 2: BLOG & ARTICLES MANAGER
            ================================================================== -->
       <section class="admin-tab-panel" id="tab-articles">
-        <div class="content-card">
+        <!-- View 1: Articles Table List View -->
+        <div class="content-card" id="articlesListView">
           <div class="content-card-header">
             <h2 class="content-card-title">Market Intelligence & Legal Briefs</h2>
             <div class="card-actions-row">
@@ -168,11 +172,11 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th style="width: 60px;">Image</th>
+                  <th style="width: 60px;">Cover</th>
                   <th>Title & Slug</th>
                   <th>Category</th>
+                  <th>Author</th>
                   <th>Published</th>
-                  <th>Spotlight</th>
                   <th style="width: 150px;">Actions</th>
                 </tr>
               </thead>
@@ -182,13 +186,199 @@
             </table>
           </div>
         </div>
+
+        <!-- View 2: Inline Article Editor View (WordPress CMS Studio Style) -->
+        <div class="content-card" id="articlesEditorView" style="display: none; padding: 0;">
+          <div class="content-card-header" style="border-bottom: 1px solid var(--admin-border); padding: 20px 24px; background: rgba(255,255,255,0.02);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnCancelArticleEditor">
+                <span>← Back to Articles</span>
+              </button>
+              <h2 class="content-card-title" id="articleEditorViewTitle" style="margin: 0;">WordPress-Style Article Studio</h2>
+            </div>
+            <div class="card-actions-row">
+              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnCancelArticleEditorSecondary">
+                <span>Cancel</span>
+              </button>
+              <button type="submit" form="inlineArticleForm" class="btn-admin btn-admin-primary">
+                <span>💾 Publish Article</span>
+              </button>
+            </div>
+          </div>
+
+          <form id="inlineArticleForm" style="padding: 24px;">
+            <input type="hidden" id="inlineArticleId">
+
+            <!-- 2-Column WordPress CMS Studio Grid -->
+            <div class="cms-editor-grid" style="display: grid; grid-template-columns: 1fr 340px; gap: 24px;">
+
+              <!-- LEFT MAIN COLUMN: Title, Content & Body Sections (70%) -->
+              <div class="cms-main-content">
+                
+                <!-- 1. Post Title Input -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label" style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase;">Article Headline Title *</label>
+                  <input type="text" id="inlineArticleTitle" class="form-control" style="font-size: 20px; font-weight: 700; padding: 14px 16px;" placeholder="Add title..." required>
+                </div>
+
+                <!-- 2. Subtitle / Tagline -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label">Subtitle / Legal Primer Tagline</label>
+                  <input type="text" id="inlineArticleSubtitle" class="form-control" placeholder="A definitive legal primer to protect diaspora capital before issuing bank transfers...">
+                </div>
+
+                <!-- 3. Excerpt / Snippet -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label">Excerpt / Card Summary</label>
+                  <textarea id="inlineArticleSnippet" class="form-control" rows="2" placeholder="Brief summary displayed on article cards & Google search snippets..."></textarea>
+                </div>
+
+                <!-- 4. Key Takeaway Box -->
+                <div class="form-group" style="margin-bottom: 24px; background: rgba(201, 157, 66, 0.05); border: 1px solid rgba(201, 157, 66, 0.2); border-radius: 8px; padding: 16px;">
+                  <label class="form-label" style="color: var(--admin-gold); font-weight: 600;">⭐ Key Executive Takeaway Box (Highlighted Banner)</label>
+                  <textarea id="inlineArticleKeyTakeaway" class="form-control" rows="2" placeholder="e.g. Never execute a real estate transaction in the FCT based solely on an offer letter..."></textarea>
+                </div>
+
+                <!-- 5. WYSIWYG Article Body Content Editor -->
+                <div class="cms-sections-wrapper" style="margin-bottom: 24px;">
+                  <h4 style="font-size: 14px; font-weight: 600; color: var(--admin-gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">
+                    📝 Article Body Content (WYSIWYG Rich Text Editor)
+                  </h4>
+
+                  <div class="wysiwyg-wrapper">
+                    <!-- WYSIWYG Formatting Toolbar -->
+                    <div class="wysiwyg-toolbar" id="wysiwygToolbar">
+                      <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                      <span style="width: 1px; height: 20px; background: var(--admin-border); margin: 0 4px;"></span>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="h2" title="Heading 2">H2</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="h3" title="Heading 3">H3</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="p" title="Paragraph">P</button>
+                      <span style="width: 1px; height: 20px; background: var(--admin-border); margin: 0 4px;"></span>
+                      <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Bullet List">• Bullet List</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Numbered List">1. Numbered List</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="formatBlock" data-val="blockquote" title="Quote Banner">“ Blockquote</button>
+                      <span style="width: 1px; height: 20px; background: var(--admin-border); margin: 0 4px;"></span>
+                      <button type="button" class="wysiwyg-btn" data-cmd="createLink" title="Add URL Link">🔗 Add Link</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="unlink" title="Remove Link">Unlink</button>
+                      <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Clear Formatting">🧹 Clear Format</button>
+                    </div>
+
+                    <!-- WYSIWYG Editable Visual Body -->
+                    <div class="wysiwyg-editor" id="inlineArticleWysiwyg" contenteditable="true" placeholder="Type or paste your article body text here..."></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RIGHT SIDEBAR PANEL: Publish & Settings (30%) -->
+              <div class="cms-sidebar">
+
+                <!-- Card A: Publish Box -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">📌 Publish Settings</h4>
+                  
+                  <div class="form-group">
+                    <label class="form-label">URL Slug *</label>
+                    <input type="text" id="inlineArticleSlug" class="form-control" placeholder="land-title-types-abuja" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Publish Date (Display)</label>
+                    <input type="text" id="inlineArticleDate" class="form-control" placeholder="e.g. September 2026">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Estimated Read Time</label>
+                    <input type="text" id="inlineArticleReadTime" class="form-control" placeholder="e.g. 6 min read">
+                  </div>
+
+                  <button type="submit" class="btn-admin btn-admin-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+                    <span>💾 Publish Article</span>
+                  </button>
+                </div>
+
+                <!-- Card B: Category & Spotlight -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">📂 Categories & Linked Estate</h4>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Primary Category</label>
+                    <select id="inlineArticleCategory" class="form-control">
+                      <option value="Legal & Due Diligence">Legal & Due Diligence</option>
+                      <option value="Market Research">Market Research</option>
+                      <option value="Investment Strategy">Investment Strategy</option>
+                      <option value="Infrastructure & Development">Infrastructure & Development</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Featured Linked Development</label>
+                    <select id="inlineArticleRelatedProperty" class="form-control">
+                      <option value="">None (General Article)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                      <input type="checkbox" id="inlineArticleFeatured" style="width: 16px; height: 16px; accent-color: var(--admin-gold);">
+                      <span>🌟 Spotlight Featured Post</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Card C: Featured Cover Image -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">🖼️ Featured Cover Image</h4>
+                  
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Cover Image Path / URL</label>
+                    <input type="text" id="inlineArticleCoverImage" class="form-control" placeholder="assets/images/masterplan-aerial.jpg">
+                  </div>
+                </div>
+
+                <!-- Card D: Author Profile -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 8px; padding: 18px;">
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--admin-gold); text-transform: uppercase; margin-bottom: 14px;">👤 Author Profile</h4>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Author Name</label>
+                    <input type="text" id="inlineArticleAuthorName" class="form-control" placeholder="e.g. Barr. Chukwuemeka Okonkwo">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Author Role / Title</label>
+                    <input type="text" id="inlineArticleAuthorRole" class="form-control" placeholder="e.g. Head of Legal & Conveyancing">
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Author Avatar URL</label>
+                    <input type="text" id="inlineArticleAuthorAvatar" class="form-control" placeholder="assets/images/about-leadership-banner.jpg">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Form Actions Footer -->
+            <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 24px; margin-top: 24px; border-top: 1px solid var(--admin-border);">
+              <button type="button" class="btn-admin btn-admin-secondary" id="btnCancelArticleEditorFooter">
+                <span>Cancel</span>
+              </button>
+              <button type="submit" class="btn-admin btn-admin-primary">
+                <span>💾 Publish Article</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </section>
 
       <!-- ==================================================================
            TAB 3: DEVELOPMENTS CATALOG
            ================================================================== -->
       <section class="admin-tab-panel" id="tab-properties">
-        <div class="content-card">
+        <!-- View 1: Developments List Table View -->
+        <div class="content-card" id="propertiesListView">
           <div class="content-card-header">
             <h2 class="content-card-title">Signature Developments & Land Assets</h2>
             <div class="card-actions-row">
@@ -235,31 +425,238 @@
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- ==================================================================
-           TAB 4: INVESTOR LEADS
-           ================================================================== -->
-      <section class="admin-tab-panel" id="tab-leads">
-        <div class="content-card">
+        <!-- View 2: Inline Property Editor View -->
+        <div class="content-card" id="propertiesEditorView" style="display: none;">
           <div class="content-card-header">
-            <h2 class="content-card-title">Consultation & Inspection Inquiries</h2>
-            <div class="card-actions-row">
-              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnClearLeads">
-                <span>Clear Records</span>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnBackToProperties">
+                <span>← Back to Catalog</span>
               </button>
+              <h2 class="content-card-title" id="inlinePropTitleText" style="margin-bottom: 0;">Add New Development Listing</h2>
             </div>
           </div>
 
+          <form id="propertyEditorForm" style="padding: 24px;">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropName">Development Name *</label>
+                <input type="text" id="modalPropName" class="form-control" placeholder="e.g., Nova Crest Ridge" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropDistrict">Abuja District *</label>
+                <input type="text" id="modalPropDistrict" class="form-control" placeholder="e.g., Maitama, Guzape, Karshi" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropSubtitle">Tagline / Subtitle</label>
+              <input type="text" id="modalPropSubtitle" class="form-control" placeholder="e.g., Luxury Hillside Terraces with Panoramic FCT Views">
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropPriceNGN">Price (NGN) *</label>
+                <input type="number" id="modalPropPriceNGN" class="form-control" placeholder="e.g., 450000000" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropPriceUSD">Price (USD) *</label>
+                <input type="number" id="modalPropPriceUSD" class="form-control" placeholder="e.g., 300000" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropStatus">Status</label>
+                <select id="modalPropStatus" class="form-control">
+                  <option value="Available">Available</option>
+                  <option value="Selling Fast">Selling Fast</option>
+                  <option value="Under Construction">Under Construction</option>
+                  <option value="Sold Out">Sold Out</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropType">Typology</label>
+                <select id="modalPropType" class="form-control">
+                  <option value="Mansion">Mansion</option>
+                  <option value="Duplex">Duplex / Villa</option>
+                  <option value="Terrace">Terrace House</option>
+                  <option value="Land Plots">Residential Land Plots</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropTitleStatus">Legal Title Document</label>
+                <input type="text" id="modalPropTitleStatus" class="form-control" placeholder="e.g., Certificate of Occupancy (C of O)">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropTitleAgency">Verification Agency</label>
+                <input type="text" id="modalPropTitleAgency" class="form-control" placeholder="e.g., FCDA / AGIS Verified">
+              </div>
+            </div>
+
+            <div class="form-grid-4">
+              <div class="form-group">
+                <label class="form-label" for="modalPropBeds">Bedrooms</label>
+                <input type="number" id="modalPropBeds" class="form-control" placeholder="5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropBaths">Bathrooms</label>
+                <input type="number" id="modalPropBaths" class="form-control" placeholder="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropCarParks">Car Parks</label>
+                <input type="number" id="modalPropCarParks" class="form-control" placeholder="4">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropLandSize">Land / Built Size</label>
+                <input type="text" id="modalPropLandSize" class="form-control" placeholder="e.g., 850 sqm">
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="modalPropImage">Main Cover Image Path</label>
+                <input type="text" id="modalPropImage" class="form-control" placeholder="assets/images/nova-crest-palace.jpg">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropGallery">Gallery Images (comma separated)</label>
+                <input type="text" id="modalPropGallery" class="form-control" placeholder="assets/images/nova-crest-palace.jpg, assets/images/your-home-interior.jpg">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropAmenities">Featured Amenities (comma separated)</label>
+              <textarea id="modalPropAmenities" class="form-control" rows="2" placeholder="Private Heated Infinity Pool, Smart Home Automation, Hybrid Solar System, Safe Room"></textarea>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="modalPropProxAirport">Airport Access</label>
+                <input type="text" id="modalPropProxAirport" class="form-control" placeholder="e.g., 28 mins via Airport Rd">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropProxCBD">CBD Distance</label>
+                <input type="text" id="modalPropProxCBD" class="form-control" placeholder="e.g., 8 mins (Central Business District)">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modalPropProxLandmark">Key Landmark</label>
+                <input type="text" id="modalPropProxLandmark" class="form-control" placeholder="e.g., 5 mins to Transcorp Hilton">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modalPropDesc">Property Description</label>
+              <textarea id="modalPropDesc" class="form-control" rows="3" placeholder="Architectural and location summary..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px;">
+                <label class="form-label" for="modalPropThesis" style="margin-bottom: 0;">Investment Thesis & Capital Return Analysis</label>
+                <button type="button" class="btn-admin btn-admin-gold btn-admin-sm" id="btnGenerateAiThesis" style="font-size: 11.5px; padding: 4px 10px;">
+                  <span>✨ Generate AI Market Analysis</span>
+                </button>
+              </div>
+              <textarea id="modalPropThesis" class="form-control" rows="3" placeholder="Strategic investment overview, projected yields, and capital appreciation forecast..."></textarea>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--admin-border);">
+              <button type="button" class="btn-admin btn-admin-secondary" id="cancelPropertyModalBtn">Cancel</button>
+              <button type="submit" class="btn-admin btn-admin-primary">
+                <span>Save Property Listing</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 4: INVESTOR LEADS & AI CRM SALES PIPELINE
+           ================================================================== -->
+      <section class="admin-tab-panel" id="tab-leads">
+        <!-- CRM KPI Highlights Header -->
+        <div class="crm-header-kpis">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Active Pipeline Value</span>
+              <div class="stat-icon">💰</div>
+            </div>
+            <div class="stat-value" id="crmKpiPipelineVal">₦2.48B</div>
+            <div class="stat-footer">Across all open deal stages</div>
+          </div>
+
+          <div class="stat-card success">
+            <div class="stat-header">
+              <span class="stat-label">Total Inquiries</span>
+              <div class="stat-icon">📥</div>
+            </div>
+            <div class="stat-value" id="crmKpiTotalLeads">5</div>
+            <div class="stat-footer">Web forms, WhatsApp & Direct calls</div>
+          </div>
+
+          <div class="stat-card crimson">
+            <div class="stat-header">
+              <span class="stat-label">Scheduled Inspections</span>
+              <div class="stat-icon">🏰</div>
+            </div>
+            <div class="stat-value" id="crmKpiInspections">2</div>
+            <div class="stat-footer">Virtual tours & private site visits</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">AI Qualification Rate</span>
+              <div class="stat-icon">✨</div>
+            </div>
+            <div class="stat-value" id="crmKpiAvgScore">90%</div>
+            <div class="stat-footer">High-net-worth investor liquidity</div>
+          </div>
+        </div>
+
+        <!-- CRM View Switcher & Action Controls -->
+        <div class="crm-view-switch-row">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="crm-btn-group">
+              <button type="button" class="crm-view-btn active" data-view="kanban" id="btnCrmViewKanban">
+                📊 Kanban Pipeline
+              </button>
+              <button type="button" class="crm-view-btn" data-view="table" id="btnCrmViewTable">
+                📋 Table Roster
+              </button>
+            </div>
+            <span style="font-size: 13px; color: var(--admin-text-muted);" id="crmLeadCountSubtitle">Showing all active sales leads</span>
+          </div>
+
+          <div class="card-actions-row">
+            <button type="button" class="btn-admin btn-admin-primary btn-admin-sm" id="btnCrmAddLead">
+              <span>+ New Investor Lead</span>
+            </button>
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="btnClearLeads">
+              <span>Clear Records</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- View Mode 1: Interactive Sales Pipeline Kanban Board -->
+        <div id="crmKanbanContainer" class="crm-kanban-board">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- View Mode 2: Detailed Table Roster View -->
+        <div id="crmTableContainer" class="content-card" style="display: none;">
           <div class="table-responsive">
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Investor Name & Source</th>
-                  <th>Phone / WhatsApp</th>
-                  <th>Interest & Requirements</th>
-                  <th>Received Date</th>
-                  <th>Direct Contact</th>
+                  <th>Investor & Location</th>
+                  <th>Contact Info</th>
+                  <th>Interest & Budget</th>
+                  <th>Pipeline Stage</th>
+                  <th>Risk Level</th>
+                  <th>AI Score</th>
+                  <th style="width: 140px;">Actions</th>
                 </tr>
               </thead>
               <tbody id="leadsTableBody">
@@ -269,6 +666,30 @@
           </div>
         </div>
       </section>
+
+      <!-- Slide-Over Lead Detail & AI Pitch Drawer -->
+      <div class="crm-drawer-backdrop" id="crmDrawerBackdrop">
+        <div class="crm-drawer">
+          <div class="drawer-header">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin: 0;" id="drawerLeadName">Lead Detail Dossier</h3>
+              <span style="font-size: 12px; color: var(--admin-gold);" id="drawerLeadSource">Website Consultation</span>
+            </div>
+            <button type="button" class="modal-close-btn" id="closeCrmDrawerBtn">&times;</button>
+          </div>
+
+          <div class="drawer-body" id="drawerLeadBody">
+            <!-- Dynamic Drawer Content -->
+          </div>
+
+          <div class="drawer-footer">
+            <button type="button" class="btn-admin btn-admin-secondary" id="btnDrawerClose">Close</button>
+            <a href="#" target="_blank" rel="noopener" class="btn-admin btn-admin-gold" id="btnDrawerWhatsApp">
+              <span>Launch WhatsApp Chat ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
 
       <!-- ==================================================================
            TAB 5: SYNC & DATA EXPORT
@@ -410,99 +831,43 @@
           </button>
         </div>
       </form>
-    </div>
-  </div>
-
   <!-- ======================================================================
-       MODAL 2: PROPERTY EDITOR MODAL
+       MODAL: AI & OXYLABS API SETTINGS
        ====================================================================== -->
-  <div class="admin-modal-backdrop" id="propertyEditorModal">
-    <div class="admin-modal-dialog">
+  <div class="admin-modal-backdrop" id="aiSettingsModal">
+    <div class="admin-modal-dialog" style="max-width: 520px;">
       <div class="admin-modal-header">
-        <h3 class="admin-modal-title" id="modalPropTitleText">Add New Development Listing</h3>
-        <button type="button" class="modal-close-btn" id="closePropertyModalBtn">&times;</button>
+        <h3 class="admin-modal-title">Real-Time AI & Web Scraper Credentials</h3>
+        <button type="button" class="modal-close-btn" id="closeAiSettingsModalBtn">&times;</button>
       </div>
-      <form id="propertyEditorForm">
+      <form id="aiSettingsForm">
         <div class="admin-modal-body">
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropName">Development Name *</label>
-              <input type="text" id="modalPropName" class="form-control" placeholder="e.g., Nova Crest Ridge" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropDistrict">Abuja District *</label>
-              <input type="text" id="modalPropDistrict" class="form-control" placeholder="e.g., Maitama, Guzape, Karshi" required>
-            </div>
-          </div>
+          <p style="font-size: 12.5px; color: var(--admin-text-muted); margin-bottom: 20px; line-height: 1.5;">
+            Configure free-tier credentials for live web scraping and real-time AI market analysis. Credentials are saved locally in your browser session.
+          </p>
 
           <div class="form-group">
-            <label class="form-label" for="modalPropSubtitle">Tagline / Subtitle</label>
-            <input type="text" id="modalPropSubtitle" class="form-control" placeholder="e.g., Luxury Hillside Terraces with Panoramic FCT Views">
+            <label class="form-label" for="settingGeminiKey">Google Gemini API Key (Free Tier)</label>
+            <input type="password" id="settingGeminiKey" class="form-control" placeholder="AIzaSy... (1,500 free requests/day)">
+            <div class="form-hint">Get a free key from <a href="https://aistudio.google.com/" target="_blank" style="color: var(--admin-gold);">Google AI Studio</a>.</div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label" for="modalPropPriceNGN">Price (NGN) *</label>
-              <input type="number" id="modalPropPriceNGN" class="form-control" placeholder="e.g., 450000000" required>
+              <label class="form-label" for="settingOxylabsUser">Oxylabs Username (Free Tier)</label>
+              <input type="text" id="settingOxylabsUser" class="form-control" placeholder="Oxylabs Username">
             </div>
             <div class="form-group">
-              <label class="form-label" for="modalPropPriceUSD">Price (USD) *</label>
-              <input type="number" id="modalPropPriceUSD" class="form-control" placeholder="e.g., 300000" required>
+              <label class="form-label" for="settingOxylabsPass">Oxylabs Password</label>
+              <input type="password" id="settingOxylabsPass" class="form-control" placeholder="Oxylabs Password">
             </div>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropStatus">Status</label>
-              <select id="modalPropStatus" class="form-control">
-                <option value="Available">Available</option>
-                <option value="Selling Fast">Selling Fast</option>
-                <option value="Under Construction">Under Construction</option>
-                <option value="Sold Out">Sold Out</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropType">Typology</label>
-              <select id="modalPropType" class="form-control">
-                <option value="Mansion">Mansion</option>
-                <option value="Duplex">Duplex / Villa</option>
-                <option value="Terrace">Terrace House</option>
-                <option value="Land Plots">Residential Land Plots</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label" for="modalPropBeds">Bedrooms</label>
-              <input type="number" id="modalPropBeds" class="form-control" placeholder="5">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="modalPropLandSize">Land / Built Size</label>
-              <input type="text" id="modalPropLandSize" class="form-control" placeholder="e.g., 850 sqm">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="modalPropImage">Main Image</label>
-            <select id="modalPropImage" class="form-control">
-              <option value="assets/images/nova-crest-palace.jpg">Nova Crest Palace (Maitama)</option>
-              <option value="assets/images/nova-crest-villa.jpg">Nova Crest Villa (Jabi Lake)</option>
-              <option value="assets/images/hero-luxury-residence.jpg">Luxury Architecture Residence</option>
-              <option value="assets/images/masterplan-aerial.jpg">Masterplan Horizon Aerial</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="modalPropDesc">Property Description</label>
-            <textarea id="modalPropDesc" class="form-control" rows="3" placeholder="Architectural and location summary..."></textarea>
           </div>
         </div>
 
         <div class="admin-modal-footer">
-          <button type="button" class="btn-admin btn-admin-secondary" id="cancelPropertyModalBtn">Cancel</button>
+          <button type="button" class="btn-admin btn-admin-secondary" id="cancelAiSettingsModalBtn">Cancel</button>
           <button type="submit" class="btn-admin btn-admin-primary">
-            <span>Save Property</span>
+            <span>Save Credentials</span>
           </button>
         </div>
       </form>

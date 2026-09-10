@@ -1,0 +1,10 @@
+{
+  "name": "novacrest-site",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "firebase": "^12.18.0"
+  }
+}
